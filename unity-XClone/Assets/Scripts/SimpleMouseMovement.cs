@@ -28,7 +28,7 @@ public class SimpleMouseMovement : MonoBehaviour
                 // Check to see if that thing was the ground.
                 if (hit.transform.tag == "GroundPlane"){
                     // Debug.Log("Hit the ground at position " + hit.point);
-                    PlayerSelectPosition?.Invoke(hit.point);
+                    PlayerSelectPosition?.Invoke(new Vector3(hit.point.x,0f,hit.point.z));
                 }
             }
         }

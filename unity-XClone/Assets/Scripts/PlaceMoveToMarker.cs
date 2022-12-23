@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class PlaceMoveToMarker : MonoBehaviour
 {
+
+    public GameObject marker;
+
     void OnEnable(){
         SimpleMouseMovement.PlayerSelectPosition += place_marker;
     }
@@ -19,6 +22,7 @@ public class PlaceMoveToMarker : MonoBehaviour
 
 
     private void place_marker(Vector3 position){
-        Debug.Log("Marker is at " + position);
+        marker.transform.position = position;
+        marker.SetActive(true);
     }
 }

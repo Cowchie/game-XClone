@@ -5,8 +5,10 @@ using UnityEngine;
 public class UnitMoveToPositionStraightLine : MonoBehaviour
 {
     public float MaxMoveDistance;
+    public float MoveSpeed;
 
-    public float TimeToMove;
+
+    private bool is_animating = false;
 
     private Vector3 initial_position;
     private Vector3 destination;
@@ -27,21 +29,39 @@ public class UnitMoveToPositionStraightLine : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if ((destination-transform.position).sqrMagnitude < (destination-initial_position).sqrMagnitude*0.001f){
-            destination = transform.position;
-            initial_position = destination;
-            return;
-        }
-        transform.Translate((destination-initial_position)*Time.deltaTime/TimeToMove);
     }
 
 
     private void SelectDestination(Vector3 new_destination){
+        if (is_animating)
+            return;
+
         if ((new_destination - transform.position).sqrMagnitude >= MaxMoveDistance*MaxMoveDistance){
             Debug.LogError("Cannot Move that far!");
             return;
         }
         initial_position = transform.position;
         destination = new_destination;
+
+        StartCoroutine(FollowStraightLinePath());
+    }
+
+
+    private IEnumerator FollowStraightLinePath(){
+        Vector3 direction = destination - initial_position;
+        float distance = direction.magnitude;
+        int number_steps = 100;
+        float time_step = distance/(MoveSpeed*number_steps);
+
+        is_animating = true;
+
+        Vector3 disp_per_step = direction/distance*MoveSpeed*time_step;
+        for (int i = 0; i < number_steps; i++)
+        {
+            yield return new WaitForSeconds(time_step);
+            transform.Translate(disp_per_step);
+        }
+
+        is_animating = false;
     }
 }
