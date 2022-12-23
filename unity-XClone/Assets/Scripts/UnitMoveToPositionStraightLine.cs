@@ -5,12 +5,14 @@ using UnityEngine;
 
 public class UnitMoveToPositionStraightLine : MonoBehaviour
 {
-    public event Action<bool> IndicateSelected;
+    public Action<bool> IndicateSelected;
 
     public float MaxMoveDistance;
     public float MoveSpeed;
     public float RotateSpeed;
 
+
+    public bool IsSelected = false;
 
     private bool is_animating = false;
 
@@ -22,21 +24,8 @@ public class UnitMoveToPositionStraightLine : MonoBehaviour
         destination = transform.position;
     }
 
-    void OnEnable(){
-        SimpleMouseMovement.PlayerSelectPosition += SelectDestination;
-    }
 
-    void OnDisable(){
-        SimpleMouseMovement.PlayerSelectPosition -= SelectDestination;
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-    }
-
-
-    private void SelectDestination(Vector3 new_destination){
+    public void SelectDestination(Vector3 new_destination){
         if (is_animating)
             return;
 
@@ -88,6 +77,7 @@ public class UnitMoveToPositionStraightLine : MonoBehaviour
         }
 
         is_animating = false;
-        IndicateSelected?.Invoke(true);
+        if (IsSelected)
+            IndicateSelected?.Invoke(true);
     }
 }
