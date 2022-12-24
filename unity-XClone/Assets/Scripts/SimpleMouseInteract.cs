@@ -15,7 +15,7 @@ public class SimpleMouseInteract : MonoBehaviour
 
     // Start is called before the first frame update
     void Start(){
-        map_layer = LayerMask.GetMask("MapLayer");
+        map_layer = LayerMask.GetMask("Map") + LayerMask.GetMask("Blockers");
         not_crowd_layer = -1 - LayerMask.GetMask("Crowd");
     }
 
