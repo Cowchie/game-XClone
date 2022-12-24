@@ -50,8 +50,10 @@ public class PathfindingGrid : MonoBehaviour
                 grid_points[x,z-1].Neighbors[1] = grid_points[x,z];
                 grid_points[x,z].Neighbors[3] = grid_points[x,z-1];
             }
-            if (InstantiateVisuals)
-                Instantiate(NodePrefab, pos, Quaternion.identity, transform);
+            if (InstantiateVisuals){
+                var node = Instantiate(NodePrefab, pos, Quaternion.identity, transform);
+                node.GetComponent<GridPointVisualizing>().SetMoveCost(cost_for_fill(grid_points[x,z].Fill));
+            }
         }}
     }
 
