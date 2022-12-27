@@ -7,11 +7,8 @@ public class TestingPathfinding : MonoBehaviour
     public PathfindingGrid grid;
 
     // Start is called before the first frame update
-    void OnEnable()
-    {
-        int count;
-        var path = grid.GeneratePath(new Vector3(17f,0f,19f), new Vector3(16f,0f,29f), out count);
-        Debug.Log(count);
+    void OnEnable(){
+        var path = grid.GeneratePath(new Vector3(0f,0f,0f), new Vector3(49f,0f,49f));
         if (path == null){
             Debug.Log("AAAAAAAAAAAAAAHHHHHHHHHHHHHHH!!!!!!!!!");
             return;

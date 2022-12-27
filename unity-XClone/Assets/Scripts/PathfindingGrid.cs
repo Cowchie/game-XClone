@@ -52,9 +52,11 @@ public class PathfindingGrid : MonoBehaviour
             }
             if (InstantiateVisuals){
                 var node = Instantiate(NodePrefab, pos, Quaternion.identity, transform);
-                node.GetComponent<GridPointVisualizing>().SetMoveCost(cost_for_fill(grid_points[x,z].Fill));
+                node.GetComponent<GridPointVisualizing>().SetMoveCost(move_rate_for_fill(grid_points[x,z].Fill));
             }
         }}
+
+        Debug.Log(grid_points.Length);
     }
 
     // Update is called once per frame
@@ -71,7 +73,7 @@ public class PathfindingGrid : MonoBehaviour
         return grid_points[x_index,z_index];
     }
 
-    private float cost_for_fill(SpaceFill fill){
+    private float move_rate_for_fill(SpaceFill fill){
         switch (fill){
             case SpaceFill.None:        return 1f;
             case SpaceFill.Impassable:  return 0f;
@@ -93,11 +95,15 @@ public class PathfindingGrid : MonoBehaviour
         return path;
     }
 
-    private float distance_heuristic(Vector3 initialPosition, GridPoint point){
-        return (initialPosition-point.Position).magnitude;
+    private float box_car_distance(Vector3 v){
+        return Mathf.Abs(v.x)+Mathf.Abs(v.y)+Mathf.Abs(v.z);
     }
 
-    public Stack<GridPoint> GeneratePath(Vector3 initialPosition, Vector3 finalPosition, out int count){
+    private float distance_heuristic(GridPoint point, Vector3 final_position){
+        return (point.Position-final_position).magnitude;
+    }
+
+    public Stack<GridPoint> GeneratePath(Vector3 initialPosition, Vector3 finalPosition){
         GridPoint start = nearest_grid_point(initialPosition);
         GridPoint goal = nearest_grid_point(finalPosition);
 
@@ -107,14 +113,12 @@ public class PathfindingGrid : MonoBehaviour
         var came_from = new Dictionary<GridPoint, GridPoint>();
 
         var g_score = new Dictionary<GridPoint, float>();
-        g_score.Add(start, 0f);
+        g_score[start] = 0f;
         
         var f_score = new Dictionary<GridPoint, float>();
-        f_score.Add(start, distance_heuristic(initialPosition, start));
+        f_score[start] = distance_heuristic(start, finalPosition);
 
-        count = 0;
         while (open_set.Count > 0){
-            count++;
             // Assume that f_score is sorted from lowest value to heighest value.
             GridPoint current = open_set.OrderBy(point => f_score[point]).First();
             if (current == goal)
@@ -125,21 +129,21 @@ public class PathfindingGrid : MonoBehaviour
             foreach (GridPoint nhbr in current.Neighbors){
                 if (nhbr == null)
                     continue;
-                if (cost_for_fill(nhbr.Fill) == 0f)
+                if (move_rate_for_fill(nhbr.Fill) == 0f)
                     continue;
                 // Debug.Log("     Neighbor at " + nhbr.Position);
-                float tentative_g_score = g_score[current] + 1f/cost_for_fill(nhbr.Fill);
-                if (
-                    !g_score.ContainsKey(nhbr) || 
-                    tentative_g_score < g_score[nhbr]
-                ){
-                    came_from[nhbr] = current;
-                    g_score[nhbr] = tentative_g_score;
-                    f_score[nhbr] = tentative_g_score+distance_heuristic(initialPosition, nhbr);
-                    f_score = f_score.OrderBy(pair=>pair.Value).ToDictionary(pair=>pair.Key, pair=>pair.Value);
-                    if (!open_set.Contains(nhbr))
-                        open_set.Add(nhbr);
-                }
+                float tentative_g_score = g_score[current] + 1f/move_rate_for_fill(nhbr.Fill);
+                if (g_score.ContainsKey(nhbr) && 
+                    tentative_g_score >= g_score[nhbr]
+                )
+                    continue;
+                
+                came_from[nhbr] = current;
+                g_score[nhbr] = tentative_g_score;
+                f_score[nhbr] = tentative_g_score+distance_heuristic(nhbr, finalPosition);
+                // f_score = f_score.OrderBy(pair=>pair.Value).ToDictionary(pair=>pair.Key, pair=>pair.Value);
+                if (!open_set.Contains(nhbr))
+                    open_set.Add(nhbr);
             }
         }
 
