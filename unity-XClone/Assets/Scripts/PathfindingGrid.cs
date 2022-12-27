@@ -55,8 +55,6 @@ public class PathfindingGrid : MonoBehaviour
                 node.GetComponent<GridPointVisualizing>().SetMoveCost(move_rate_for_fill(grid_points[x,z].Fill));
             }
         }}
-
-        Debug.Log(grid_points.Length);
     }
 
     // Update is called once per frame
@@ -82,7 +80,7 @@ public class PathfindingGrid : MonoBehaviour
         }
     }
 
-    private Stack<GridPoint> reconstruct_path(
+    public Stack<GridPoint> ReconstructPath(
         Dictionary<GridPoint, GridPoint> came_from, 
         GridPoint current
     ){
@@ -103,6 +101,54 @@ public class PathfindingGrid : MonoBehaviour
         return (point.Position-final_position).magnitude;
     }
 
+    // Finds all of the shortest paths of length <= distance.
+    public (Dictionary<GridPoint, GridPoint>, Dictionary<GridPoint, float>) FindAllPossibleMoves(Vector3 initialPosition, float maxDistance){
+        GridPoint start = nearest_grid_point(initialPosition);
+
+        var open_set = new List<GridPoint>();
+        open_set.Add(start);
+
+        var came_from = new Dictionary<GridPoint, GridPoint>();
+
+        var g_score = new Dictionary<GridPoint, float>();
+        g_score[start] = 0f;
+        
+
+        while (open_set.Count > 0){
+            // We should use a priority queue at some point.
+            GridPoint current = open_set.OrderBy(point => g_score[point]).First();
+
+            // Debug.Log("Currently at " + current.Position);
+            open_set.Remove(current);
+            foreach (GridPoint nhbr in current.Neighbors){
+                if (nhbr == null)
+                    continue;
+                if (move_rate_for_fill(nhbr.Fill) == 0f)
+                    continue;
+                // Debug.Log("     Neighbor at " + nhbr.Position);
+                float tentative_g_score = g_score[current] + 1f/move_rate_for_fill(nhbr.Fill);
+                // If this path is too far, continue;
+                if (tentative_g_score > maxDistance)
+                    continue;
+                // If the nhbr does not have infinite distance and we already have a better score, continue;
+                if (g_score.ContainsKey(nhbr) && 
+                    tentative_g_score >= g_score[nhbr]
+                )
+                    continue;
+                
+                came_from[nhbr] = current;
+                g_score[nhbr] = tentative_g_score;
+                // f_score = f_score.OrderBy(pair=>pair.Value).ToDictionary(pair=>pair.Key, pair=>pair.Value);
+                if (!open_set.Contains(nhbr))
+                    open_set.Add(nhbr);
+            }
+        }
+
+        // If we have reached here, we can return the came_from dictionary and also the g_score? 
+        return (came_from, g_score);
+    }
+
+    // Finds the fasted path between initailPosition and finalPosition
     public Stack<GridPoint> GeneratePath(Vector3 initialPosition, Vector3 finalPosition){
         GridPoint start = nearest_grid_point(initialPosition);
         GridPoint goal = nearest_grid_point(finalPosition);
@@ -119,10 +165,10 @@ public class PathfindingGrid : MonoBehaviour
         f_score[start] = distance_heuristic(start, finalPosition);
 
         while (open_set.Count > 0){
-            // Assume that f_score is sorted from lowest value to heighest value.
+            // We should use a priority queue at some point.
             GridPoint current = open_set.OrderBy(point => f_score[point]).First();
             if (current == goal)
-                return reconstruct_path(came_from, current);
+                return ReconstructPath(came_from, current);
             
             // Debug.Log("Currently at " + current.Position);
             open_set.Remove(current);
