@@ -1,8 +1,7 @@
 using System.Linq;
-using System.Collections;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
-using TMPro;
 
 public enum UnitAffiliation{
     Player, Hostile
@@ -24,10 +23,11 @@ public struct Unit{
 public class TacticalGameplay : MonoBehaviour
 {
 
+    public static event Action<Dictionary<GridPoint, float>> OnUnitPossibleMovesCalculated;
+
     //TODO: This is a bad way to do this kind of stuff. I should fix it.
     public PathfindingGrid Pathfinding;
-
-    public GameObject GameObjectForPreviewigSpaces;
+    public SimpleMouseInteract MouseInteract;
 
     private List<Unit> units;
 
@@ -47,23 +47,45 @@ public class TacticalGameplay : MonoBehaviour
     }
 
     void OnEnable(){
-        // Start of turn we want to find the grid points that we can move to.
-        Unit selected = units.OrderBy(u => -u.SelectedNumber).First();
-        if (selected.SelectedNumber < 1)
-            return;
-        
-        (var came_froms, var path_costs) = Pathfinding.FindAllPossibleMoves(selected.Position, selected.MoveDistancePerActionPoint);
+        SimpleMouseInteract.PlayerSelectMoveToPosition += select_position_to_move_selected_unit_to;
+    }
 
-        Debug.Log("The points that "+selected.Name+" can visit are: ");
-        foreach (var point in path_costs.Keys){
-            var preview = Instantiate(GameObjectForPreviewigSpaces, point.Position, Quaternion.identity);
-            preview.GetComponentInChildren<TextMeshPro>().text = path_costs[point].ToString();
+    void OnDisable(){
+        SimpleMouseInteract.PlayerSelectMoveToPosition -= select_position_to_move_selected_unit_to;
+    }
+
+
+    private Unit selected_unit;
+    private Dictionary<GridPoint, GridPoint> selected_unit_came_froms;
+    private Dictionary<GridPoint, float> selected_unit_path_costs;
+
+
+    // Update is called once per frame
+    void Update(){
+        if (Input.GetKeyDown(KeyCode.Space)){
+            //TODO: Figure out how turns are going to work and run this code when the unit is selected.
+            // Start of turn we want to find the grid points that we can move to.
+            selected_unit = units.OrderByDescending(u => u.SelectedNumber).First();
+            if (selected_unit.SelectedNumber < 1)
+                return;
+
+            (selected_unit_came_froms, selected_unit_path_costs) = Pathfinding.FindAllPossibleMoves(selected_unit.Position, selected_unit.MoveDistancePerActionPoint);
+
+            //TODO: Separate this into a separate visuals class which displays this information.
+            // Debug.Log("The points that "+selected.Name+" can visit are: ");
+            OnUnitPossibleMovesCalculated?.Invoke(selected_unit_path_costs);   
         }
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
+    private void select_position_to_move_selected_unit_to(GridPoint finalGridPoint, Vector3 position){
+        var path = Pathfinding.ReconstructPath(selected_unit_came_froms, finalGridPoint);
+        float path_length = selected_unit_path_costs[finalGridPoint];
+
+        selected_unit.ActionPoints -= path_length;
+
+        while(path.Count > 0){
+            selected_unit.Position = path.Pop().Position;
+            Debug.Log("The unit " + selected_unit.Name + " is at the position " + selected_unit.Position);
+        }
     }
 }

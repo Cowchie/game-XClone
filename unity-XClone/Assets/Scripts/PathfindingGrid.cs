@@ -93,15 +93,8 @@ public class PathfindingGrid : MonoBehaviour
         return path;
     }
 
-    private float box_car_distance(Vector3 v){
-        return Mathf.Abs(v.x)+Mathf.Abs(v.y)+Mathf.Abs(v.z);
-    }
 
-    private float distance_heuristic(GridPoint point, Vector3 final_position){
-        return (point.Position-final_position).magnitude;
-    }
-
-    // Finds all of the shortest paths of length <= distance.
+    // Finds all of the shortest paths of length <= maxDistance.
     public (Dictionary<GridPoint, GridPoint>, Dictionary<GridPoint, float>) FindAllPossibleMoves(Vector3 initialPosition, float maxDistance){
         GridPoint start = nearest_grid_point(initialPosition);
 
@@ -148,7 +141,15 @@ public class PathfindingGrid : MonoBehaviour
         return (came_from, g_score);
     }
 
-    // Finds the fasted path between initailPosition and finalPosition
+    private float box_car_distance(Vector3 v){
+        return Mathf.Abs(v.x)+Mathf.Abs(v.y)+Mathf.Abs(v.z);
+    }
+
+    private float distance_heuristic(GridPoint point, Vector3 final_position){
+        return (point.Position-final_position).magnitude;
+    }
+
+    // Finds the fasted path between initialPosition and finalPosition
     public Stack<GridPoint> GeneratePath(Vector3 initialPosition, Vector3 finalPosition){
         GridPoint start = nearest_grid_point(initialPosition);
         GridPoint goal = nearest_grid_point(finalPosition);

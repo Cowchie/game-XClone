@@ -8,11 +8,11 @@ public class PlaceMoveToMarker : MonoBehaviour
     public GameObject marker;
 
     void OnEnable(){
-        SimpleMouseInteract.PlayerSelectPosition += place_marker;
+        SimpleMouseInteract.PlayerSelectMoveToPosition += place_marker;
     }
 
     void OnDisable(){
-        SimpleMouseInteract.PlayerSelectPosition -= place_marker;
+        SimpleMouseInteract.PlayerSelectMoveToPosition -= place_marker;
     }
     // Update is called once per frame
     void Update()
@@ -21,7 +21,7 @@ public class PlaceMoveToMarker : MonoBehaviour
     }
 
 
-    private void place_marker(Vector3 position){
+    private void place_marker(GridPoint point, Vector3 position){
         marker.transform.position = position;
         marker.SetActive(true);
     }
