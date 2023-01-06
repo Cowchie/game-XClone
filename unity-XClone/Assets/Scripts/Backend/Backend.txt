@@ -1,0 +1,89 @@
+How is this going to work?
+
+
+It will be a while before visuals happen probably...
+
+On player's turn:
+    - Select one of their units.
+    - Move that unit to a new position.
+    - Have that unit use an action (will involve selecting more units)
+    - Repeat until action points on all units are used, or ends turn.
+
+--------------------------------------------------------------------------
+
+How does selecting with a mouse work?
+Need to be able to:
+    - Select player unit for its own actions.
+    - Select unit to be acted on by another unit.
+    - Select position for moving unit or placing a unit ability (like grenade or smoke?)
+    - Select object to be used as environmental attack?
+    - Gameloop needs to be able to ask for such information and halt while waiting for it.
+
+--------------------------------------------------------------------------
+
+How does the pathfinding work?
+This is similar to what we had working before
+Needs to be able to:
+    - Before the battle starts, we have to create the grid exactly like in Version2022.0
+    - Calculate all possible paths less than the move cap from the unit.
+    - Does the above as soon as the unit has been selected. 
+    - Change move costs when unit is occupying a position.
+
+--------------------------------------------------------------------------
+
+How do we keep track of unit stats?
+Stats to keep track of:
+    - Position
+    - Action points remaining
+    - Action points gained at start of turn
+    - Total action points
+    - Cost of movement per action points
+    - Unit affiliation
+
+How do we want to change the unit stats? 
+    Callbacks for sure.
+
+This means that when we instantiate a unit, we create a list of callbacks which can be subscribed to for each stat change.
+class UStat<statT> {
+    private statT value;
+    public event Action<statT> OnChanged;
+
+    public void SetValue(statT val){
+        value = val;
+        OnChanged?.Invoke(val);
+    }
+
+    public statT GetValue(){
+        return value;
+    }
+}
+
+--------------------------------------------------------------------------
+
+How do we handle animation? 
+We want to be able to be able to queue animations and pause the gameloop while they play out.
+Do this by creating a animation queue class which 
+    - Queues animations (coroutines)
+        - Can a new animation be placed in front of the queue? Should be no need for this. 
+    - Has a bool for if it is playing an animation.
+
+class AnimationQueue{
+
+    Queue of funcitions with signiture:
+        IEnumerator animation(out bool animation_complete, float playback_speed)
+    Call it anim_queue?
+
+    private bool animating_current;
+
+    Update() ??
+    if not animating_current and anim_queue.Count > 0
+        animating_current = true
+        StartCoroutine((anim_queue.Dequeue())?.Invoke(out animating_current, 1.0f))
+
+    
+    public bool NotAnimating{
+        get {return !animating_current && anim_queue.Count == 0}
+    }
+}
+
+--------------------------------------------------------------------------
