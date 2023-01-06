@@ -5,6 +5,7 @@ using UnityEngine;
 
 public class SimpleMouseInteract : MonoBehaviour
 {
+    public static event Action<Unit, Action<Stack<GridPoint>>> PlayerSelectUnit;
     public static event Action<GridPoint, Vector3> PlayerSelectMoveToPosition;
 
     public TacticalOverlayUI OverlayUI;
@@ -37,32 +38,28 @@ public class SimpleMouseInteract : MonoBehaviour
                 // Check to see if that thing was the ground.
                 if (hit.transform.tag == "GroundPlane"){
                     var point = find_grid_point_for_selected_unit_move(hit.point);
-                    Debug.Log("Clicked on: " + hit.point);
-                    Debug.Log("Nearest grid point is: " + point.Position);
+                    // Debug.Log("Clicked on: " + hit.point);
+                    // Debug.Log("Nearest grid point is: " + point.Position);
                     if (point != null)
                         PlayerSelectMoveToPosition?.Invoke(point, hit.point);
                 }
             }
         }
 
-        // if (Input.GetMouseButtonUp(0)){
-        //     Ray mouse_ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        //     if (Physics.Raycast(mouse_ray, out RaycastHit hit, 50f, not_crowd_layer)){
-        //         // Check to see if we hit a unit.
-        //         var new_unit = hit.transform.GetComponent<UnitMoveToPositionStraightLine>();
+        if (Input.GetMouseButtonUp(0)){
+            Ray mouse_ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            if (Physics.Raycast(mouse_ray, out RaycastHit hit, 50f, not_crowd_layer)){
+                // Check to see if we hit a unit.
+                var new_unit = hit.transform.GetComponent<UnitMoveToPositionStraightLine>();
 
-        //         if (selected_unit != null){
-        //             selected_unit.IndicateSelected?.Invoke(false);
-        //             selected_unit.IsSelected = false;
-        //         }
-        //         selected_unit = null;
-        //         if (new_unit != null){
-        //             selected_unit = new_unit;
-        //             selected_unit.IsSelected = true;
-        //             selected_unit.IndicateSelected?.Invoke(true);
-        //         }
-        //     }
-        // }
+                if (new_unit != null){
+                    PlayerSelectUnit?.Invoke(new_unit.GetUnit, new_unit.ChooseMovePath);
+                }
+                if (new_unit != null){
+                    Debug.Log("What the hell do I do here? I'm actually so confused right now...");
+                }
+            }
+        }
     }
 
     private List<GridPoint> points_to_move_near;

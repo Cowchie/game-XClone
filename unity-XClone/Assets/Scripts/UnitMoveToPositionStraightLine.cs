@@ -5,46 +5,51 @@ using UnityEngine;
 
 public class UnitMoveToPositionStraightLine : MonoBehaviour
 {
-    public Action<bool> IndicateSelected;
+    private Unit my_unit;
+    public Unit GetUnit{
+        get {return my_unit;}
+    }
+
+    public event Action<bool> IndicateSelected;
 
     public float MaxMoveDistance;
     public float MoveSpeed;
     public float RotateSpeed;
 
 
-    public bool IsSelected = false;
+    private bool IsSelected = false;
 
     private bool is_animating = false;
 
-    private Vector3 initial_position;
-    private Vector3 destination;
+    void Start(){}
 
-    void Start(){
-        initial_position = transform.position;
-        destination = transform.position;
+    private Stack<GridPoint> move_path;
+
+    public void ChooseMovePath(Stack<GridPoint> path){
+        move_path = path;
+        move_to_grid_point_line(path.Pop());
     }
 
-
-    public void SelectDestination(Vector3 new_destination){
+    private void move_to_grid_point_line(GridPoint point){
         if (is_animating)
             return;
 
-        if ((new_destination - transform.position).sqrMagnitude >= MaxMoveDistance*MaxMoveDistance){
-            return;
-        }
-        initial_position = transform.position;
-        destination = new_destination;
-
-        StartCoroutine(RotateToFacePath());
+        StartCoroutine(rotate_then_move_to_destination(point, move_to_grid_point_line));
     }
-
-
-    private IEnumerator RotateToFacePath(){        
-        Vector3 direction = (destination - initial_position).normalized;
+    private IEnumerator rotate_then_move_to_destination(GridPoint destination_point, Action<GridPoint> finished){
+        Vector3 initial_position = transform.position;
+        Vector3 destination = destination_point.Position; 
+        Vector3 displacement = destination - initial_position;
+        float distance = displacement.magnitude;
+        Vector3 direction = displacement/distance;
         float angle = Vector3.SignedAngle(transform.forward, direction, transform.up);
+        
+        float min_rot_distance = 0.1f;
+        float min_move_distance = 0.01f;
 
-        int number_steps = 100;
+        int number_steps = Mathf.CeilToInt(angle/min_rot_distance);
         float time_step = Mathf.Abs(angle)/(RotateSpeed*number_steps);
+
 
         is_animating = true;
         IndicateSelected?.Invoke(false);
@@ -56,18 +61,8 @@ public class UnitMoveToPositionStraightLine : MonoBehaviour
             transform.Rotate(transform.up, angle_per_step, Space.World);
         }
 
-        is_animating = false;
-        StartCoroutine(FollowStraightLinePath());
-    }
-
-
-    private IEnumerator FollowStraightLinePath(){
-        Vector3 direction = destination - initial_position;
-        float distance = direction.magnitude;
-        int number_steps = 100;
-        float time_step = distance/(MoveSpeed*number_steps);
-
-        is_animating = true;
+        number_steps = Mathf.CeilToInt(distance/min_move_distance);
+        time_step = distance/(MoveSpeed*number_steps);
 
         Vector3 disp_per_step = direction/distance*MoveSpeed*time_step;
         for (int i = 0; i < number_steps; i++)
@@ -76,8 +71,26 @@ public class UnitMoveToPositionStraightLine : MonoBehaviour
             transform.Translate(disp_per_step, Space.World);
         }
 
-        is_animating = false;
-        if (IsSelected)
-            IndicateSelected?.Invoke(true);
+        if (move_path.Count > 0){
+            finished(move_path.Pop());
+        }
+        else{
+            is_animating = false;
+            if (IsSelected)
+                IndicateSelected?.Invoke(true);
+        }
+    }
+
+
+    public Unit SelectMe(out Action deselect_action){
+        IsSelected = true;
+        IndicateSelected?.Invoke(true);
+        deselect_action = deselect_me;
+        return my_unit;
+    }
+
+    private void deselect_me(){
+        IsSelected = false;
+        IndicateSelected?.Invoke(false);
     }
 }
