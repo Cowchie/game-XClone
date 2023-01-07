@@ -67,6 +67,8 @@ Do this by creating a animation queue class which
         - Can a new animation be placed in front of the queue? Should be no need for this. 
     - Has a bool for if it is playing an animation.
 
+
+// This is kinda the thing I might want.
 class AnimationQueue{
 
     Queue of funcitions with signiture:
@@ -80,10 +82,24 @@ class AnimationQueue{
         animating_current = true
         StartCoroutine((anim_queue.Dequeue())?.Invoke(out animating_current, 1.0f))
 
-    
+    // This also works?
+    // This is actually really cool if it works.
+    // This allows me to not make AnimationQueue derive from Monobehaviour.
+    public IEnumerator PlayAllAnimations(){
+        bool currently_animating = true
+        while(anim_queue.Count > 0){
+            yield return (anim_queue.Dequeue())?.Invoke(out animating_current, 1.0f))
+        }
+        currently_animating = false
+    }
+
     public bool NotAnimating{
         get {return !animating_current && anim_queue.Count == 0}
     }
 }
+
+--------------------------------------------------------------------------
+
+
 
 --------------------------------------------------------------------------
