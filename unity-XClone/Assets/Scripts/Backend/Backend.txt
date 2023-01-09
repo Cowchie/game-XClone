@@ -117,4 +117,61 @@ How do turns work?
 - ...
 - Repeat
 
+interface ITreeBranch{
+    public void CenterOn(ITreeBranch prev)
+    public ITreeBranch DoUpdate()
+}
+
+class BetweenTurns : ITreeBranch{
+    private ITreeBranch[] turns
+    private int current_index
+
+    CenterOn(prev){
+        current_index++
+        current_index = current_index < turns.Length ? current_index : 0
+    }
+
+    DoUpdate(){
+        return turns[current_index]
+    }
+}
+
+class PlayerTurn : ITreeBranch{
+    List<Unit> Units
+
+    PlayerSelectUnit player_select_unit
+
+    CenterOn(prev) = null
+    DoUpdate() = player_select_unit
+}
+
+class PlayerSelectUnit : ITreeBranch{
+    PlayerUseUnitActionPoints player_use_unit_action_points
+    PlayerEndTurn player_end_turn
+
+    private bool has_selected_unit
+    Unit SelectedUnit
+
+    CenterOn(prev){
+        has_selected_unit = false;
+        // Give PlayerTurn.Units to the mouse script so that it knows things?
+        Subscribe to mouse function which is called when the player selects a units
+        Subscribe to end of turn selecting button
+    }
+
+    DoUpdate(){
+        If the player has selected a unit, we return player_use_unit_action_points
+        If the player has ended turn, we return player_end_turn
+        Otherwise return this
+    }
+}
+
+class PlayerUseUnitActionPoints : ITreeBranch{}
+
+class PlayerEndTurn : ITreeBranch{}
+
+--------------------------------------------------------------------------
+
+
+
 --------------------------------------------------------------------------
