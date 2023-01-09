@@ -88,7 +88,7 @@ class AnimationQueue{
     public IEnumerator PlayAllAnimations(){
         bool currently_animating = true
         while(anim_queue.Count > 0){
-            yield return (anim_queue.Dequeue())?.Invoke(out animating_current, 1.0f))
+            yield return (anim_queue.Dequeue())?.Invoke(out animating_current, 1.0f)
         }
         currently_animating = false
     }
@@ -100,6 +100,21 @@ class AnimationQueue{
 
 --------------------------------------------------------------------------
 
-
+How do turns work?
+- Player's turn
+    - Refill unit action points
+    - Ask the player to select a unit
+        - Use unit action points
+        - Deselect unit
+    - Repeat selecting units
+    - End turn
+- Enemy's turn
+    - Refill unit action points
+    - Ask the AI to select a unit
+        - Ask the AI to use unit action points
+    - Repeat selecting units
+    - End turn
+- ...
+- Repeat
 
 --------------------------------------------------------------------------
