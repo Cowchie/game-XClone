@@ -118,7 +118,7 @@ How do turns work?
 - Repeat
 
 interface ITreeBranch{
-    public void CenterOn(ITreeBranch prev)
+    public void CenterOn(ref ITreeBranch prev)
     public ITreeBranch DoUpdate()
 }
 
@@ -136,18 +136,18 @@ class BetweenTurns : ITreeBranch{
     }
 }
 
-class PlayerTurn : ITreeBranch{
+class StartTurn : ITreeBranch{
     List<Unit> Units
 
-    PlayerSelectUnit player_select_unit
+    ITreeBranch select_unit
 
     CenterOn(prev) = null
-    DoUpdate() = player_select_unit
+    DoUpdate() = select_unit
 }
 
 class PlayerSelectUnit : ITreeBranch{
     PlayerUseUnitActionPoints player_use_unit_action_points
-    PlayerEndTurn player_end_turn
+    EndTurn player_end_turn
 
     private bool has_selected_unit
     Unit SelectedUnit
@@ -155,20 +155,54 @@ class PlayerSelectUnit : ITreeBranch{
     CenterOn(prev){
         has_selected_unit = false;
         // Give PlayerTurn.Units to the mouse script so that it knows things?
-        Subscribe to mouse function which is called when the player selects a units
-        Subscribe to end of turn selecting button
+        Subscribe to mouse functions
+        Subscribe to end of turn button functions
     }
 
     DoUpdate(){
         If the player has selected a unit, we return player_use_unit_action_points
         If the player has ended turn, we return player_end_turn
+        For each of those, do these:
+            - Unsubscribe to mouse funcitions
+            - Unsubscribe to end of turn button
         Otherwise return this
     }
 }
 
-class PlayerUseUnitActionPoints : ITreeBranch{}
+class PlayerUseUnitActionPoints : ITreeBranch{
+    // For each unit action, there is a callback which we want to subscribe to when we select a unit
+    Dictionary<ITreeBranch branch, event Action button_callback> UnitActionsMap;
+    PlayerSelectUnit player_select_unit
+    EndTurn player_end_turn
 
-class PlayerEndTurn : ITreeBranch{}
+    Unit SelectedUnit
+
+    CenterOn(prev){
+        SelectedUnit = prev.SelectedUnit
+
+        Subscribe to choose which actions to take functions
+        Subscribe to deselect unit functions
+        Subscribe to end of turn button functions
+    }
+
+    DoUpdate(){
+        If the player has picked an action, we return the branch which points to that button_callback in UnitActionsMap
+        If the player has deselected a unit, we return player_select_unit
+        If the player has ended turn, we return player_end_turn
+        For each of those, do these:
+            - Unsubscribe from choose which actions to take functions
+            - Unsubscribe from deselect unit functions
+            - Unsubscribe from end of turn button functions
+        Otherwise return this
+    }
+}
+
+class EndTurn : ITreeBranch{
+    BetweenTurns between
+
+    CenterOn(prev) = null
+    DoUpdate() = between
+}
 
 --------------------------------------------------------------------------
 
