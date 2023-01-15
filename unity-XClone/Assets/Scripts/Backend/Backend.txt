@@ -117,11 +117,16 @@ How do turns work?
 - ...
 - Repeat
 
+// This version of interface works. However, it might be better to call a callback when we switch branches.
+// Mmmmmmmmm... I think this is better maybe...
+
+// Remove that ugly ass I
 interface ITreeBranch{
     public void CenterOn(ref ITreeBranch prev)
     public ITreeBranch DoUpdate()
 }
 
+// This is done with the more general CycleBranches class in the StateTree
 class BetweenTurns : ITreeBranch{
     private ITreeBranch[] turns
     private int current_index
@@ -136,6 +141,7 @@ class BetweenTurns : ITreeBranch{
     }
 }
 
+// This is done with the more general CallbacksThenDoNext class in the StateTree 
 class StartTurn : ITreeBranch{
     List<Unit> Units
 
@@ -204,8 +210,13 @@ class EndTurn : ITreeBranch{
     DoUpdate() = between
 }
 
+
+// Do the AI turns later?
+// I think that this may be done for now.
+
 --------------------------------------------------------------------------
 
+// What next?
 
 
 --------------------------------------------------------------------------

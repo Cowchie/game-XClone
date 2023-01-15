@@ -5,8 +5,8 @@ using UnityEngine;
 
 public class UnitMoveToPositionStraightLine : MonoBehaviour
 {
-    private Unit my_unit;
-    public Unit GetUnit{
+    private OldUnit my_unit;
+    public OldUnit GetUnit{
         get {return my_unit;}
     }
 
@@ -82,7 +82,7 @@ public class UnitMoveToPositionStraightLine : MonoBehaviour
     }
 
 
-    public Unit SelectMe(out Action deselect_action){
+    public OldUnit SelectMe(out Action deselect_action){
         IsSelected = true;
         IndicateSelected?.Invoke(true);
         deselect_action = deselect_me;

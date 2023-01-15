@@ -7,7 +7,7 @@ public enum UnitAffiliation{
     Player, Hostile
 }
 
-public struct Unit{
+public struct OldUnit{
     public string Name;
     public UnitAffiliation Affiliation;
 
@@ -29,12 +29,12 @@ public class TacticalGameplay : MonoBehaviour
     public PathfindingGrid Pathfinding;
     public SimpleMouseInteract MouseInteract;
 
-    private List<Unit> units;
+    private List<OldUnit> units;
 
     // Start is called before the first frame update
     void Start(){
-        units = new List<Unit>();
-        Unit dummy = new Unit();
+        units = new List<OldUnit>();
+        OldUnit dummy = new OldUnit();
         dummy.Name = "dummy";
         dummy.Affiliation = UnitAffiliation.Player;
         dummy.SelectedNumber = 1;
@@ -55,7 +55,7 @@ public class TacticalGameplay : MonoBehaviour
     }
 
 
-    private Unit selected_unit;
+    private OldUnit selected_unit;
     private Dictionary<GridPoint, GridPoint> selected_unit_came_froms;
     private Dictionary<GridPoint, float> selected_unit_path_costs;
 
@@ -73,7 +73,7 @@ public class TacticalGameplay : MonoBehaviour
         units.ForEach(u => u.SelectedNumber = 0);
     }
 
-    private void player_select_unit(Unit unit, Action<Stack<GridPoint>> choose_path_action){
+    private void player_select_unit(OldUnit unit, Action<Stack<GridPoint>> choose_path_action){
         selected_unit = unit;
         player_choose_path_action = choose_path_action;
 

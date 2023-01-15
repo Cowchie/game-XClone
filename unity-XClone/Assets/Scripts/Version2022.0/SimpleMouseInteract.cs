@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class SimpleMouseInteract : MonoBehaviour
 {
-    public static event Action<Unit, Action<Stack<GridPoint>>> PlayerSelectUnit;
+    public static event Action<OldUnit, Action<Stack<GridPoint>>> PlayerSelectUnit;
     public static event Action<GridPoint, Vector3> PlayerSelectMoveToPosition;
 
     public TacticalOverlayUI OverlayUI;
