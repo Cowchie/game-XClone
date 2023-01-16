@@ -9,6 +9,22 @@ public interface TreeBranch<TreeS>{
     public TreeBranch<TreeS> DoUpdate(TreeS tree);
 }
 
+public static class GenericTreeMethods{
+
+    public static TreeBranch<TreeS> UpdateTree<TreeS>(
+        TreeBranch<TreeS> prev_branch,  
+        TreeS tree
+    ){
+        var curr_branch = prev_branch.DoUpdate(tree);
+        if (curr_branch != prev_branch){
+            curr_branch.CenterOn(prev_branch);
+        }
+
+        return curr_branch;
+    }
+    
+}
+
 // A branch which cycles through an array of branches
 public class CycleBranches<TreeS> : TreeBranch<TreeS>{
     private GetBranch<TreeS>[] getsBranches;

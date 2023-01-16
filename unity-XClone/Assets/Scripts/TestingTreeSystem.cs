@@ -4,36 +4,37 @@ using UnityEngine;
 
 using StateTree;
 
-struct Tree{
-    public CycleBranches<Tree> cycleBetweenAandB;
-    public CallbacksThenDoNext<Tree> branchA;
-    public CallbacksThenDoNext<Tree> afterBranchA;
-    public CallbacksThenDoNext<Tree> branchB;
-    public CallbacksThenDoNext<Tree> branchC;
-}
+namespace TestingStuff{
 
+struct TestingTree{
+    public CycleBranches<TestingTree> cycleBetweenAandB;
+    public CallbacksThenDoNext<TestingTree> branchA;
+    public CallbacksThenDoNext<TestingTree> afterBranchA;
+    public CallbacksThenDoNext<TestingTree> branchB;
+    public CallbacksThenDoNext<TestingTree> branchC;
+}
 
 public class TestingTreeSystem : MonoBehaviour
 {
-    Tree tree;
-    TreeBranch<Tree> current_branch;
+    TestingTree tree;
+    TreeBranch<TestingTree> current_branch;
 
     // Start is called before the first frame update
     void Start()
     {
-        tree = new Tree();
-        tree.cycleBetweenAandB = new CycleBranches<Tree>(
+        tree = new TestingTree();
+        tree.cycleBetweenAandB = new CycleBranches<TestingTree>(
                 s => s.branchA, 
                 s => s.branchB, 
                 s => s.branchC
             );
-        tree.branchA        = new CallbacksThenDoNext<Tree>
+        tree.branchA        = new CallbacksThenDoNext<TestingTree>
             (s => s.afterBranchA);
-        tree.afterBranchA   = new CallbacksThenDoNext<Tree>
+        tree.afterBranchA   = new CallbacksThenDoNext<TestingTree>
             (s => s.cycleBetweenAandB);
-        tree.branchB        = new CallbacksThenDoNext<Tree>
+        tree.branchB        = new CallbacksThenDoNext<TestingTree>
             (s => s.cycleBetweenAandB);
-        tree.branchC        = new CallbacksThenDoNext<Tree>
+        tree.branchC        = new CallbacksThenDoNext<TestingTree>
             (s => s.branchC);
         
         tree.branchA.OnCenterOn += when_A;
@@ -56,27 +57,28 @@ public class TestingTreeSystem : MonoBehaviour
         }
     }
 
-    private void when_A(TreeBranch<Tree> prev, TreeBranch<Tree> curr){
+    private void when_A(TreeBranch<TestingTree> prev, TreeBranch<TestingTree> curr){
         Debug.Log("We just switched into A");
         Debug.Log("     Came from:      " + prev);
         Debug.Log("     Currently on:   " + curr);
     }
 
-    private void when_after_A(TreeBranch<Tree> prev, TreeBranch<Tree> curr){
+    private void when_after_A(TreeBranch<TestingTree> prev, TreeBranch<TestingTree> curr){
         Debug.Log("We just switched into AfterA");
         Debug.Log("     Came from:      " + prev);
         Debug.Log("     Currently on:   " + curr);
     }
 
-    private void when_B(TreeBranch<Tree> prev, TreeBranch<Tree> curr){
+    private void when_B(TreeBranch<TestingTree> prev, TreeBranch<TestingTree> curr){
         Debug.Log("We just switched into B");
         Debug.Log("     Came from:      " + prev);
         Debug.Log("     Currently on:   " + curr);
     }
 
-    private void when_C(TreeBranch<Tree> prev, TreeBranch<Tree> curr){
+    private void when_C(TreeBranch<TestingTree> prev, TreeBranch<TestingTree> curr){
         Debug.Log("We just switched into C");
         Debug.Log("     Came from:      " + prev);
         Debug.Log("     Currently on:   " + curr);
     }
+}
 }
