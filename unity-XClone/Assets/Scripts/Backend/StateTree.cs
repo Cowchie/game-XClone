@@ -5,7 +5,7 @@ public delegate TreeBranch<TreeS> GetBranch<TreeS>(TreeS tree);
 
 // The interface from which all tree branches derive. 
 public interface TreeBranch<TreeS>{
-    public void CenterOn(GetBranch<TreeS> prev, TreeS tree);
+    public void CenterOn(TreeBranch<TreeS> prev);
     public TreeBranch<TreeS> DoUpdate(TreeS tree);
 }
 
@@ -19,7 +19,7 @@ public class CycleBranches<TreeS> : TreeBranch<TreeS>{
         current_index = -1;
     }
 
-    void TreeBranch<TreeS>.CenterOn(GetBranch<TreeS> prev, TreeS tree){
+    void TreeBranch<TreeS>.CenterOn(TreeBranch<TreeS> prev){
         current_index++;
         current_index = current_index < getsBranches.Length ? current_index : 0;
     }
@@ -31,30 +31,24 @@ public class CycleBranches<TreeS> : TreeBranch<TreeS>{
 
 // The signature of a function which is called everytime we center on CallbacksThenDoNext.
 public delegate void WhenCenteredOn<TreeS>(
-        GetBranch<TreeS>    previous, 
-        GetBranch<TreeS>    current,
-        TreeS               tree
+        TreeBranch<TreeS>    previous, 
+        TreeBranch<TreeS>    current
     );
 // A branch which calls a list of callbacks everytime it is centered on and then immediately moves on to another branch.
 public class CallbacksThenDoNext<TreeS> : TreeBranch<TreeS>{
     public event WhenCenteredOn<TreeS> OnCenterOn;
 
-    private GetBranch<TreeS> get_this;
-    private GetBranch<TreeS> get_next;
-    public CallbacksThenDoNext(
-        GetBranch<TreeS> this_branch, 
-        GetBranch<TreeS> next_branch
-    ){
-        get_this = this_branch;
-        get_next = next_branch;
+    private GetBranch<TreeS> next;
+    public CallbacksThenDoNext(GetBranch<TreeS> next_branch){
+        next = next_branch;
     }
 
-    void TreeBranch<TreeS>.CenterOn(GetBranch<TreeS> prev, TreeS tree){
-        OnCenterOn?.Invoke(prev, get_this, tree);
+    void TreeBranch<TreeS>.CenterOn(TreeBranch<TreeS> prev){
+        OnCenterOn?.Invoke(prev, this);
     }
 
     TreeBranch<TreeS> TreeBranch<TreeS>.DoUpdate(TreeS tree){
-        return get_next(tree);
+        return next(tree);
     }
 }
 
