@@ -6,42 +6,60 @@ using UnityEngine;
 using StateTree;
 
 public struct TurnTree{
-    public CallbacksThenDoNext<TurnTree>    StartBattle;
-    public CycleBranches<TurnTree>          BetweenTurns;
-    public CallbacksThenDoNext<TurnTree>    StartPlayerTurn;
-    public CallbacksThenDoNext<TurnTree>    EndPlayerTurn;
+    public DoNext<TurnTree>         StartBattle;
+    public CycleBranches<TurnTree>  BetweenTurns;
+    public DoNext<TurnTree>         StartPlayerTurn;
+    public DelayDoNext<TurnTree>    WaitForEndPlayerTurn;
+    public DoNext<TurnTree>         EndPlayerTurn;
 }
 
 public class TurnManager : MonoBehaviour
 {
-    private TurnTree tree;
+    public PlayerInputActions input;
 
+    private TurnTree tree;
     TreeBranch<TurnTree> current_turn;
 
     // Start is called before the first frame update
     void Start(){
+        // Initializes the inputs
+        input = new PlayerInputActions();
+        input.TacticalCombat.Enable();
+
+        // Initializes the tree
         tree = new TurnTree();
 
-        tree.StartBattle = new CallbacksThenDoNext<TurnTree>(
+        // Branch which triggers at the start of the battle.
+        tree.StartBattle = new DoNext<TurnTree>(
             s => s.BetweenTurns
         );
+        tree.StartBattle.OnCenterOn += 
+            LogOnCenterOn("Start Battle!");
 
+        // Branch which cycles between the turns.
         tree.BetweenTurns = new CycleBranches<TurnTree>(
             s => s.StartPlayerTurn
         );
 
-        tree.StartPlayerTurn = new CallbacksThenDoNext<TurnTree>(
-            s => s.EndPlayerTurn
+        // Branch which triggers at the start of the player's turn.
+        tree.StartPlayerTurn = new DoNext<TurnTree>(
+            s => s.WaitForEndPlayerTurn
         );
-
-        tree.EndPlayerTurn = new CallbacksThenDoNext<TurnTree>(
-            s => s.BetweenTurns
-        );
-
-        tree.StartBattle.OnCenterOn += 
-            LogOnCenterOn("Start Battle!");
         tree.StartPlayerTurn.OnCenterOn += 
             LogOnCenterOn("     Start Player Turn! Please choose an action...");
+
+        // Branch which waits for the player to press the end turn button.
+        tree.WaitForEndPlayerTurn = new DelayDoNext<TurnTree>(
+            out var player_end_turn_callback, 
+            s => s.EndPlayerTurn
+        );
+        input.TacticalCombat.EndTurn.performed += 
+            (c => player_end_turn_callback());
+
+        // Branch which triggers at the end of the player's turn.
+        tree.EndPlayerTurn = new DoNext<TurnTree>(
+            s => s.BetweenTurns
+        );
         tree.EndPlayerTurn.OnCenterOn += 
             LogOnCenterOn("     End Player Turn");
     }

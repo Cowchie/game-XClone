@@ -8,10 +8,10 @@ namespace TestingStuff{
 
 struct TestingTree{
     public CycleBranches<TestingTree> cycleBetweenAandB;
-    public CallbacksThenDoNext<TestingTree> branchA;
-    public CallbacksThenDoNext<TestingTree> afterBranchA;
-    public CallbacksThenDoNext<TestingTree> branchB;
-    public CallbacksThenDoNext<TestingTree> branchC;
+    public DoNext<TestingTree> branchA;
+    public DoNext<TestingTree> afterBranchA;
+    public DoNext<TestingTree> branchB;
+    public DoNext<TestingTree> branchC;
 }
 
 public class TestingTreeSystem : MonoBehaviour
@@ -28,13 +28,13 @@ public class TestingTreeSystem : MonoBehaviour
                 s => s.branchB, 
                 s => s.branchC
             );
-        tree.branchA        = new CallbacksThenDoNext<TestingTree>
+        tree.branchA        = new DoNext<TestingTree>
             (s => s.afterBranchA);
-        tree.afterBranchA   = new CallbacksThenDoNext<TestingTree>
+        tree.afterBranchA   = new DoNext<TestingTree>
             (s => s.cycleBetweenAandB);
-        tree.branchB        = new CallbacksThenDoNext<TestingTree>
+        tree.branchB        = new DoNext<TestingTree>
             (s => s.cycleBetweenAandB);
-        tree.branchC        = new CallbacksThenDoNext<TestingTree>
+        tree.branchC        = new DoNext<TestingTree>
             (s => s.branchC);
         
         tree.branchA.OnCenterOn += when_A;

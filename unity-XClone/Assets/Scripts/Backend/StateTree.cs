@@ -51,11 +51,11 @@ public delegate void WhenCenteredOn<TreeS>(
         TreeBranch<TreeS>    current
     );
 // A branch which calls a list of callbacks everytime it is centered on and then immediately moves on to another branch.
-public class CallbacksThenDoNext<TreeS> : TreeBranch<TreeS>{
+public class DoNext<TreeS> : TreeBranch<TreeS>{
     public event WhenCenteredOn<TreeS> OnCenterOn;
 
     private GetBranch<TreeS> next;
-    public CallbacksThenDoNext(GetBranch<TreeS> next_branch){
+    public DoNext(GetBranch<TreeS> next_branch){
         next = next_branch;
     }
 
@@ -65,6 +65,32 @@ public class CallbacksThenDoNext<TreeS> : TreeBranch<TreeS>{
 
     TreeBranch<TreeS> TreeBranch<TreeS>.DoUpdate(TreeS tree){
         return next(tree);
+    }
+}
+
+// Subscribes to a callback and then will wait for that callback to be called before moving on to next.
+public class DelayDoNext<TreeS> : TreeBranch<TreeS>{
+    private GetBranch<TreeS> next;
+    public DelayDoNext(
+        out System.Action callback, 
+        GetBranch<TreeS> next_branch
+    ){
+        callback = set_flag;
+        next = next_branch;
+    }
+
+    private bool flag;
+    void set_flag(){
+        flag = true;
+    }
+
+    void TreeBranch<TreeS>.CenterOn(TreeBranch<TreeS> prev)
+    {
+        flag = false;
+    }
+    TreeBranch<TreeS> TreeBranch<TreeS>.DoUpdate(TreeS tree)
+    {
+        return flag ? next(tree) : this;
     }
 }
 
