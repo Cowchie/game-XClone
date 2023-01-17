@@ -5,7 +5,7 @@ public delegate TreeBranch<TreeS> GetBranch<TreeS>(TreeS tree);
 
 // The interface from which all tree branches derive. 
 public interface TreeBranch<TreeS>{
-    public void CenterOn(TreeBranch<TreeS> prev);
+    public void CenterOn(TreeBranch<TreeS> prev, TreeS tree);
     public TreeBranch<TreeS> DoUpdate(TreeS tree);
 }
 
@@ -17,7 +17,7 @@ public static class GenericTreeMethods{
     ){
         var curr_branch = prev_branch.DoUpdate(tree);
         if (curr_branch != prev_branch){
-            curr_branch.CenterOn(prev_branch);
+            curr_branch.CenterOn(prev_branch, tree);
         }
 
         return curr_branch;
@@ -35,7 +35,7 @@ public class CycleBranches<TreeS> : TreeBranch<TreeS>{
         current_index = -1;
     }
 
-    void TreeBranch<TreeS>.CenterOn(TreeBranch<TreeS> prev){
+    void TreeBranch<TreeS>.CenterOn(TreeBranch<TreeS> prev, TreeS tree){
         current_index++;
         current_index = current_index < getsBranches.Length ? current_index : 0;
     }
@@ -59,7 +59,7 @@ public class DoNext<TreeS> : TreeBranch<TreeS>{
         next = next_branch;
     }
 
-    void TreeBranch<TreeS>.CenterOn(TreeBranch<TreeS> prev){
+    void TreeBranch<TreeS>.CenterOn(TreeBranch<TreeS> prev, TreeS tree){
         OnCenterOn?.Invoke(prev, this);
     }
 
@@ -84,7 +84,7 @@ public class DelayDoNext<TreeS> : TreeBranch<TreeS>{
         flag = true;
     }
 
-    void TreeBranch<TreeS>.CenterOn(TreeBranch<TreeS> prev){
+    void TreeBranch<TreeS>.CenterOn(TreeBranch<TreeS> prev, TreeS tree){
         flag = false;
     }
     TreeBranch<TreeS> TreeBranch<TreeS>.DoUpdate(TreeS tree){
@@ -94,22 +94,23 @@ public class DelayDoNext<TreeS> : TreeBranch<TreeS>{
 
 // Keeps track of a number of branches at once, we return the result of the first of them to update.
 public class FirstOfNext<TreeS> : TreeBranch<TreeS>{
-    private TreeBranch<TreeS>[] nexts;
+    private GetBranch<TreeS>[] sub_currents;
 
-    public FirstOfNext(params TreeBranch<TreeS>[] next_branches){
-        nexts = next_branches;
+    public FirstOfNext(params GetBranch<TreeS>[] sub_branches){
+        sub_currents = sub_branches;
     }
 
-    void TreeBranch<TreeS>.CenterOn(TreeBranch<TreeS> prev){
-        for (int i = 0; i < nexts.Length; i++){
-            nexts[i].CenterOn(prev);
+    void TreeBranch<TreeS>.CenterOn(TreeBranch<TreeS> prev, TreeS tree){
+        for (int i = 0; i < sub_currents.Length; i++){
+            sub_currents[i](tree).CenterOn(prev, tree);
         }
     }
     TreeBranch<TreeS> TreeBranch<TreeS>.DoUpdate(TreeS tree){
-        for (int i = 0; i < nexts.Length; i++){
-            var b = nexts[i].DoUpdate(tree);
-            if (b != nexts[i])
-                return b;
+        for (int i = 0; i < sub_currents.Length; i++){
+            var curr = sub_currents[i](tree);
+            var nxt = curr.DoUpdate(tree);
+            if (nxt != curr)
+                return nxt;
         }
         return this;
     }

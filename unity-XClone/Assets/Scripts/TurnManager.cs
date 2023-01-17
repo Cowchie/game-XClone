@@ -51,7 +51,7 @@ public class TurnManager : MonoBehaviour
         tree.PlayerStartTurn.OnCenterOn += 
             LogOnCenterOn("     Start Player Turn! Please choose an action...");
 }
-{ // Branch which waits for the player to press the button to enter unit move mode.
+{ // Branch which waits for the player to press the button to press unit move.
         tree.DelayPlayerUnitMove = new DelayDoNext<TurnTree>(
             out var player_unit_move_callback, 
             s => s.PlayerStartUnitMove
@@ -76,8 +76,8 @@ public class TurnManager : MonoBehaviour
 }
 { // Branch which waits for the player to take some action
         tree.FirstOfPlayerActions = new FirstOfNext<TurnTree>(
-            tree.DelayPlayerUnitMove, 
-            tree.DelayPlayerEndTurn
+            s => s.DelayPlayerUnitMove, 
+            s => s.DelayPlayerEndTurn
         );
 }
 { // Branch which triggers at the end of the player's turn.
@@ -93,13 +93,13 @@ public class TurnManager : MonoBehaviour
     void Update(){
         if (current_turn is null){
             current_turn = tree.StartBattle;
-            current_turn.CenterOn(tree.StartBattle);
+            current_turn.CenterOn(tree.StartBattle, tree);
         }
 
         var prev_branch = current_turn;
         current_turn = current_turn.DoUpdate(tree);
         if (current_turn != prev_branch){
-            current_turn.CenterOn(prev_branch);
+            current_turn.CenterOn(prev_branch, tree);
         }
     }
 
