@@ -32,13 +32,13 @@ public class TurnManager : MonoBehaviour
         // Initializes the tree
         tree = new TurnTree();
 
-        // Branch which triggers at the start of the battle.
+{ // Branch which triggers at the start of the battle.
         tree.StartBattle = new DoNext<TurnTree>(
             s => s.BetweenTurns
         );
         tree.StartBattle.OnCenterOn += 
             LogOnCenterOn("Start Battle!");
-
+}
 { // Branch which cycles between the turns.
         tree.BetweenTurns = new CycleBranches<TurnTree>(
             s => s.PlayerStartTurn
@@ -106,6 +106,6 @@ public class TurnManager : MonoBehaviour
     private WhenCenteredOn<TurnTree> LogOnCenterOn(
         string s
     ){
-        return (a, b) => Debug.Log(s);
+        return (_a, _b) => Debug.Log(s);
     }
 }
