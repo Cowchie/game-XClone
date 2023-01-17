@@ -35,6 +35,15 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""UnitMove"",
+                    ""type"": ""Button"",
+                    ""id"": ""0f8b89ed-e9dd-492a-b702-d0b4bd158803"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -48,6 +57,17 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
                     ""action"": ""EndTurn"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""8e326f03-2c90-463b-801e-1b1f5417e0aa"",
+                    ""path"": ""<Keyboard>/1"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""UnitMove"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -57,6 +77,7 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
         // TacticalCombat
         m_TacticalCombat = asset.FindActionMap("TacticalCombat", throwIfNotFound: true);
         m_TacticalCombat_EndTurn = m_TacticalCombat.FindAction("EndTurn", throwIfNotFound: true);
+        m_TacticalCombat_UnitMove = m_TacticalCombat.FindAction("UnitMove", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -117,11 +138,13 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
     private readonly InputActionMap m_TacticalCombat;
     private ITacticalCombatActions m_TacticalCombatActionsCallbackInterface;
     private readonly InputAction m_TacticalCombat_EndTurn;
+    private readonly InputAction m_TacticalCombat_UnitMove;
     public struct TacticalCombatActions
     {
         private @PlayerInputActions m_Wrapper;
         public TacticalCombatActions(@PlayerInputActions wrapper) { m_Wrapper = wrapper; }
         public InputAction @EndTurn => m_Wrapper.m_TacticalCombat_EndTurn;
+        public InputAction @UnitMove => m_Wrapper.m_TacticalCombat_UnitMove;
         public InputActionMap Get() { return m_Wrapper.m_TacticalCombat; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -134,6 +157,9 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
                 @EndTurn.started -= m_Wrapper.m_TacticalCombatActionsCallbackInterface.OnEndTurn;
                 @EndTurn.performed -= m_Wrapper.m_TacticalCombatActionsCallbackInterface.OnEndTurn;
                 @EndTurn.canceled -= m_Wrapper.m_TacticalCombatActionsCallbackInterface.OnEndTurn;
+                @UnitMove.started -= m_Wrapper.m_TacticalCombatActionsCallbackInterface.OnUnitMove;
+                @UnitMove.performed -= m_Wrapper.m_TacticalCombatActionsCallbackInterface.OnUnitMove;
+                @UnitMove.canceled -= m_Wrapper.m_TacticalCombatActionsCallbackInterface.OnUnitMove;
             }
             m_Wrapper.m_TacticalCombatActionsCallbackInterface = instance;
             if (instance != null)
@@ -141,6 +167,9 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
                 @EndTurn.started += instance.OnEndTurn;
                 @EndTurn.performed += instance.OnEndTurn;
                 @EndTurn.canceled += instance.OnEndTurn;
+                @UnitMove.started += instance.OnUnitMove;
+                @UnitMove.performed += instance.OnUnitMove;
+                @UnitMove.canceled += instance.OnUnitMove;
             }
         }
     }
@@ -148,5 +177,6 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
     public interface ITacticalCombatActions
     {
         void OnEndTurn(InputAction.CallbackContext context);
+        void OnUnitMove(InputAction.CallbackContext context);
     }
 }

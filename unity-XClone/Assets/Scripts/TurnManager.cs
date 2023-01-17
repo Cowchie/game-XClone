@@ -8,9 +8,12 @@ using StateTree;
 public struct TurnTree{
     public DoNext<TurnTree>         StartBattle;
     public CycleBranches<TurnTree>  BetweenTurns;
-    public DoNext<TurnTree>         StartPlayerTurn;
-    public DelayDoNext<TurnTree>    WaitForEndPlayerTurn;
-    public DoNext<TurnTree>         EndPlayerTurn;
+    public DoNext<TurnTree>         PlayerStartTurn;
+    public DelayDoNext<TurnTree>    DelayPlayerUnitMove;
+    public DoNext<TurnTree>         PlayerStartUnitMove;
+    public DelayDoNext<TurnTree>    DelayPlayerEndTurn;
+    public FirstOfNext<TurnTree>    FirstOfPlayerActions;
+    public DoNext<TurnTree>         PlayerEndTurn;
 }
 
 public class TurnManager : MonoBehaviour
@@ -36,32 +39,54 @@ public class TurnManager : MonoBehaviour
         tree.StartBattle.OnCenterOn += 
             LogOnCenterOn("Start Battle!");
 
-        // Branch which cycles between the turns.
+{ // Branch which cycles between the turns.
         tree.BetweenTurns = new CycleBranches<TurnTree>(
-            s => s.StartPlayerTurn
+            s => s.PlayerStartTurn
         );
-
-        // Branch which triggers at the start of the player's turn.
-        tree.StartPlayerTurn = new DoNext<TurnTree>(
-            s => s.WaitForEndPlayerTurn
+}
+{ // Branch which triggers at the start of the player's turn.
+        tree.PlayerStartTurn = new DoNext<TurnTree>(
+            s => s.FirstOfPlayerActions
         );
-        tree.StartPlayerTurn.OnCenterOn += 
+        tree.PlayerStartTurn.OnCenterOn += 
             LogOnCenterOn("     Start Player Turn! Please choose an action...");
-
-        // Branch which waits for the player to press the end turn button.
-        tree.WaitForEndPlayerTurn = new DelayDoNext<TurnTree>(
+}
+{ // Branch which waits for the player to press the button to enter unit move mode.
+        tree.DelayPlayerUnitMove = new DelayDoNext<TurnTree>(
+            out var player_unit_move_callback, 
+            s => s.PlayerStartUnitMove
+        );
+        input.TacticalCombat.UnitMove.performed += 
+            (c => player_unit_move_callback());
+}
+{ // Branch which triggers when player chooses to move
+        tree.PlayerStartUnitMove = new DoNext<TurnTree>(
+            s => s.FirstOfPlayerActions
+        );
+        tree.PlayerStartUnitMove.OnCenterOn += 
+            LogOnCenterOn("     Choose a place for the unit to move!");
+}
+{ // Branch which waits for the player to press the end turn button.
+        tree.DelayPlayerEndTurn = new DelayDoNext<TurnTree>(
             out var player_end_turn_callback, 
-            s => s.EndPlayerTurn
+            s => s.PlayerEndTurn
         );
         input.TacticalCombat.EndTurn.performed += 
             (c => player_end_turn_callback());
-
-        // Branch which triggers at the end of the player's turn.
-        tree.EndPlayerTurn = new DoNext<TurnTree>(
+}
+{ // Branch which waits for the player to take some action
+        tree.FirstOfPlayerActions = new FirstOfNext<TurnTree>(
+            tree.DelayPlayerUnitMove, 
+            tree.DelayPlayerEndTurn
+        );
+}
+{ // Branch which triggers at the end of the player's turn.
+        tree.PlayerEndTurn = new DoNext<TurnTree>(
             s => s.BetweenTurns
         );
-        tree.EndPlayerTurn.OnCenterOn += 
+        tree.PlayerEndTurn.OnCenterOn += 
             LogOnCenterOn("     End Player Turn");
+}
     }
 
     // Update is called once per frame

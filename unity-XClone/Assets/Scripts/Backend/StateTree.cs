@@ -84,14 +84,34 @@ public class DelayDoNext<TreeS> : TreeBranch<TreeS>{
         flag = true;
     }
 
-    void TreeBranch<TreeS>.CenterOn(TreeBranch<TreeS> prev)
-    {
+    void TreeBranch<TreeS>.CenterOn(TreeBranch<TreeS> prev){
         flag = false;
     }
-    TreeBranch<TreeS> TreeBranch<TreeS>.DoUpdate(TreeS tree)
-    {
+    TreeBranch<TreeS> TreeBranch<TreeS>.DoUpdate(TreeS tree){
         return flag ? next(tree) : this;
     }
 }
 
+// Keeps track of a number of branches at once, we return the result of the first of them to update.
+public class FirstOfNext<TreeS> : TreeBranch<TreeS>{
+    private TreeBranch<TreeS>[] nexts;
+
+    public FirstOfNext(params TreeBranch<TreeS>[] next_branches){
+        nexts = next_branches;
+    }
+
+    void TreeBranch<TreeS>.CenterOn(TreeBranch<TreeS> prev){
+        for (int i = 0; i < nexts.Length; i++){
+            nexts[i].CenterOn(prev);
+        }
+    }
+    TreeBranch<TreeS> TreeBranch<TreeS>.DoUpdate(TreeS tree){
+        for (int i = 0; i < nexts.Length; i++){
+            var b = nexts[i].DoUpdate(tree);
+            if (b != nexts[i])
+                return b;
+        }
+        return this;
+    }
+    }
 }
