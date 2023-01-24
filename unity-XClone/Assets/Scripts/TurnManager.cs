@@ -6,14 +6,14 @@ using UnityEngine;
 using StateTree;
 
 public struct TurnTree{
-    public DoNext<TurnTree>         StartBattle;
+    public CallDoNext<TurnTree>     StartBattle;
     public CycleBranches<TurnTree>  BetweenTurns;
-    public DoNext<TurnTree>         PlayerStartTurn;
+    public CallDoNext<TurnTree>     PlayerStartTurn;
     public DelayDoNext<TurnTree>    DelayPlayerUnitMove;
-    public DoNext<TurnTree>         PlayerStartUnitMove;
+    public CallDoNext<TurnTree>     PlayerStartUnitMove;
     public DelayDoNext<TurnTree>    DelayPlayerEndTurn;
     public FirstOfNext<TurnTree>    FirstOfPlayerActions;
-    public DoNext<TurnTree>         PlayerEndTurn;
+    public CallDoNext<TurnTree>     PlayerEndTurn;
 }
 
 public class TurnManager : MonoBehaviour
@@ -33,7 +33,7 @@ public class TurnManager : MonoBehaviour
         tree = new TurnTree();
 
 { // Branch which triggers at the start of the battle.
-        tree.StartBattle = new DoNext<TurnTree>(
+        tree.StartBattle = new CallDoNext<TurnTree>(
             s => s.BetweenTurns
         );
         tree.StartBattle.OnCenterOn += 
@@ -45,7 +45,7 @@ public class TurnManager : MonoBehaviour
         );
 }
 { // Branch which triggers at the start of the player's turn.
-        tree.PlayerStartTurn = new DoNext<TurnTree>(
+        tree.PlayerStartTurn = new CallDoNext<TurnTree>(
             s => s.FirstOfPlayerActions
         );
         tree.PlayerStartTurn.OnCenterOn += 
@@ -60,7 +60,7 @@ public class TurnManager : MonoBehaviour
             (c => player_unit_move_callback());
 }
 { // Branch which triggers when player chooses to move
-        tree.PlayerStartUnitMove = new DoNext<TurnTree>(
+        tree.PlayerStartUnitMove = new CallDoNext<TurnTree>(
             s => s.FirstOfPlayerActions
         );
         tree.PlayerStartUnitMove.OnCenterOn += 
@@ -81,7 +81,7 @@ public class TurnManager : MonoBehaviour
         );
 }
 { // Branch which triggers at the end of the player's turn.
-        tree.PlayerEndTurn = new DoNext<TurnTree>(
+        tree.PlayerEndTurn = new CallDoNext<TurnTree>(
             s => s.BetweenTurns
         );
         tree.PlayerEndTurn.OnCenterOn += 

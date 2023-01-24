@@ -9,21 +9,22 @@ public interface TreeBranch<TreeS>{
     public TreeBranch<TreeS> DoUpdate(TreeS tree);
 }
 
-public static class GenericTreeMethods{
+// public static class GenericTreeMethods{
 
-    public static TreeBranch<TreeS> UpdateTree<TreeS>(
-        TreeBranch<TreeS> prev_branch,  
-        TreeS tree
-    ){
-        var curr_branch = prev_branch.DoUpdate(tree);
-        if (curr_branch != prev_branch){
-            curr_branch.CenterOn(prev_branch, tree);
-        }
+//     public static TreeBranch<TreeS> UpdateTree<TreeS>(
+//         TreeBranch<TreeS> prev_branch,  
+//         TreeS tree
+//     ){
+//         var curr_branch = prev_branch.DoUpdate(tree);
+//         if (curr_branch != prev_branch){
+//             curr_branch.CenterOn(prev_branch, tree);
+//         }
 
-        return curr_branch;
-    }
+//         return curr_branch;
+//     }
     
-}
+// }
+
 
 // A branch which cycles through an array of branches
 public class CycleBranches<TreeS> : TreeBranch<TreeS>{
@@ -51,11 +52,11 @@ public delegate void WhenCenteredOn<TreeS>(
         TreeBranch<TreeS>    current
     );
 // A branch which calls a list of callbacks everytime it is centered on and then immediately moves on to another branch.
-public class DoNext<TreeS> : TreeBranch<TreeS>{
+public class CallDoNext<TreeS> : TreeBranch<TreeS>{
     public event WhenCenteredOn<TreeS> OnCenterOn;
 
     private GetBranch<TreeS> next;
-    public DoNext(GetBranch<TreeS> next_branch){
+    public CallDoNext(GetBranch<TreeS> next_branch){
         next = next_branch;
     }
 

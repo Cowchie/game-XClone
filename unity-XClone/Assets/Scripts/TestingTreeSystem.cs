@@ -8,10 +8,10 @@ namespace TestingStuff{
 
 struct TestingTree{
     public CycleBranches<TestingTree> cycleBetweenAandB;
-    public DoNext<TestingTree> branchA;
-    public DoNext<TestingTree> afterBranchA;
-    public DoNext<TestingTree> branchB;
-    public DoNext<TestingTree> branchC;
+    public CallDoNext<TestingTree> branchA;
+    public CallDoNext<TestingTree> afterBranchA;
+    public CallDoNext<TestingTree> branchB;
+    public CallDoNext<TestingTree> branchC;
 }
 
 public class TestingTreeSystem : MonoBehaviour
@@ -28,13 +28,13 @@ public class TestingTreeSystem : MonoBehaviour
                 s => s.branchB, 
                 s => s.branchC
             );
-        tree.branchA        = new DoNext<TestingTree>
+        tree.branchA        = new CallDoNext<TestingTree>
             (s => s.afterBranchA);
-        tree.afterBranchA   = new DoNext<TestingTree>
+        tree.afterBranchA   = new CallDoNext<TestingTree>
             (s => s.cycleBetweenAandB);
-        tree.branchB        = new DoNext<TestingTree>
+        tree.branchB        = new CallDoNext<TestingTree>
             (s => s.cycleBetweenAandB);
-        tree.branchC        = new DoNext<TestingTree>
+        tree.branchC        = new CallDoNext<TestingTree>
             (s => s.branchC);
         
         tree.branchA.OnCenterOn += when_A;
@@ -48,12 +48,12 @@ public class TestingTreeSystem : MonoBehaviour
     {
         if (current_branch is null){
             current_branch = tree.cycleBetweenAandB;
-            current_branch.CenterOn(tree.cycleBetweenAandB);
+            current_branch.CenterOn(tree.cycleBetweenAandB, tree);
         }
         var prev_branch = current_branch;
         current_branch = current_branch.DoUpdate(tree);
         if (current_branch != prev_branch){
-            current_branch.CenterOn(prev_branch);
+            current_branch.CenterOn(prev_branch, tree);
         }
     }
 
