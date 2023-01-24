@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -11,6 +10,11 @@ public struct TurnTree{
     public CallDoNext<TurnTree>     PlayerStartTurn;
     public DelayDoNext<TurnTree>    DelayPlayerUnitMove;
     public CallDoNext<TurnTree>     PlayerStartUnitMove;
+    public DelayDoNext<TurnTree>    DelayPlayerPickPosition;
+    public CallDoNext<TurnTree>     PlayerPickedPosition;
+    public DelayDoNext<TurnTree>    DelayPlayerCancelMove;
+    public CallDoNext<TurnTree>     PlayerCancelMove;
+    public FirstOfNext<TurnTree>    FirstOfPlayerPickPositionOrCancel;
     public DelayDoNext<TurnTree>    DelayPlayerEndTurn;
     public FirstOfNext<TurnTree>    FirstOfPlayerActions;
     public CallDoNext<TurnTree>     PlayerEndTurn;
@@ -18,17 +22,13 @@ public struct TurnTree{
 
 public class TurnManager : MonoBehaviour
 {
-    public PlayerInputActions input;
+    public PlayerDirector Director;
 
     private TurnTree tree;
     TreeBranch<TurnTree> current_turn;
 
     // Start is called before the first frame update
     void Start(){
-        // Initializes the inputs
-        input = new PlayerInputActions();
-        input.TacticalCombat.Enable();
-
         // Initializes the tree
         tree = new TurnTree();
 
@@ -56,23 +56,56 @@ public class TurnManager : MonoBehaviour
             out var player_unit_move_callback, 
             s => s.PlayerStartUnitMove
         );
-        input.TacticalCombat.UnitMove.performed += 
-            (c => player_unit_move_callback());
+        Director.SetUnitMove(player_unit_move_callback);
 }
 { // Branch which triggers when player chooses to move
         tree.PlayerStartUnitMove = new CallDoNext<TurnTree>(
-            s => s.FirstOfPlayerActions
+            s => s.FirstOfPlayerPickPositionOrCancel
         );
         tree.PlayerStartUnitMove.OnCenterOn += 
             LogOnCenterOn("     Choose a place for the unit to move!");
+}
+{ // Branch which waits for the player to select a position.
+        tree.DelayPlayerPickPosition = new DelayDoNext<TurnTree>(
+            out var player_pick_position_callback, 
+            s => s.PlayerPickedPosition
+        );
+        Director.SetPickPosition(player_pick_position_callback);
+}
+{ // Branch which triggers when the player choses a position.
+        tree.PlayerPickedPosition = new CallDoNext<TurnTree>(
+            s => s.PlayerStartUnitMove
+        );
+        tree.PlayerPickedPosition.OnCenterOn += 
+            LogOnCenterOn("     Player picked a position!");
+}
+{ // Branch which waits for the player to cancel the current move.
+        tree.DelayPlayerCancelMove = new DelayDoNext<TurnTree>(
+            out var player_cancel_callback, 
+            s => s.PlayerCancelMove
+        );
+        Director.SetCancel(player_cancel_callback);
+}
+{ // Branch which triggers when the player chooses to cancel the move
+        tree.PlayerCancelMove = new CallDoNext<TurnTree>(
+            s => s.FirstOfPlayerActions
+        );
+        tree.PlayerCancelMove.OnCenterOn += 
+            LogOnCenterOn("     Cancel Move");
+}
+{ // Branch which waits for the player to either select a position, cancel, or end turn
+        tree.FirstOfPlayerPickPositionOrCancel = new FirstOfNext<TurnTree>(
+            s => s.DelayPlayerPickPosition, 
+            s => s.DelayPlayerCancelMove,
+            s => s.DelayPlayerEndTurn
+        );
 }
 { // Branch which waits for the player to press the end turn button.
         tree.DelayPlayerEndTurn = new DelayDoNext<TurnTree>(
             out var player_end_turn_callback, 
             s => s.PlayerEndTurn
         );
-        input.TacticalCombat.EndTurn.performed += 
-            (c => player_end_turn_callback());
+        Director.SetEndTurn(player_end_turn_callback);
 }
 { // Branch which waits for the player to take some action
         tree.FirstOfPlayerActions = new FirstOfNext<TurnTree>(
@@ -99,6 +132,7 @@ public class TurnManager : MonoBehaviour
         var prev_branch = current_turn;
         current_turn = current_turn.DoUpdate(tree);
         if (current_turn != prev_branch){
+            // Debug.Log(current_turn);
             current_turn.CenterOn(prev_branch, tree);
         }
     }

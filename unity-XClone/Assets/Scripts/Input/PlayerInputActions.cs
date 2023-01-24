@@ -44,6 +44,33 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""PickPosition"",
+                    ""type"": ""Button"",
+                    ""id"": ""1a2d181a-eedd-4ae8-b126-038d0612cd36"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""MousePosition"",
+                    ""type"": ""Value"",
+                    ""id"": ""32ca493f-7827-4d19-bbc4-7a7a5439fb00"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""Cancel"",
+                    ""type"": ""Button"",
+                    ""id"": ""04d3ad7a-02ad-4a7a-a931-1974c70173a3"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -68,6 +95,50 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
                     ""action"": ""UnitMove"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""dbf6e579-5f85-4e65-b011-bd4edd8b7ff6"",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""PickPosition"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""387e1ddf-46e8-4a85-8550-21cf4da59b44"",
+                    ""path"": ""<Mouse>/rightButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Cancel"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""92aee9ac-dc7a-473d-be55-c9ac3adadd20"",
+                    ""path"": ""<Keyboard>/escape"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Cancel"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""b9a54590-4d62-417e-900e-9e07f39e8621"",
+                    ""path"": ""<Mouse>/position"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""MousePosition"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -78,6 +149,9 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
         m_TacticalCombat = asset.FindActionMap("TacticalCombat", throwIfNotFound: true);
         m_TacticalCombat_EndTurn = m_TacticalCombat.FindAction("EndTurn", throwIfNotFound: true);
         m_TacticalCombat_UnitMove = m_TacticalCombat.FindAction("UnitMove", throwIfNotFound: true);
+        m_TacticalCombat_PickPosition = m_TacticalCombat.FindAction("PickPosition", throwIfNotFound: true);
+        m_TacticalCombat_MousePosition = m_TacticalCombat.FindAction("MousePosition", throwIfNotFound: true);
+        m_TacticalCombat_Cancel = m_TacticalCombat.FindAction("Cancel", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -139,12 +213,18 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
     private ITacticalCombatActions m_TacticalCombatActionsCallbackInterface;
     private readonly InputAction m_TacticalCombat_EndTurn;
     private readonly InputAction m_TacticalCombat_UnitMove;
+    private readonly InputAction m_TacticalCombat_PickPosition;
+    private readonly InputAction m_TacticalCombat_MousePosition;
+    private readonly InputAction m_TacticalCombat_Cancel;
     public struct TacticalCombatActions
     {
         private @PlayerInputActions m_Wrapper;
         public TacticalCombatActions(@PlayerInputActions wrapper) { m_Wrapper = wrapper; }
         public InputAction @EndTurn => m_Wrapper.m_TacticalCombat_EndTurn;
         public InputAction @UnitMove => m_Wrapper.m_TacticalCombat_UnitMove;
+        public InputAction @PickPosition => m_Wrapper.m_TacticalCombat_PickPosition;
+        public InputAction @MousePosition => m_Wrapper.m_TacticalCombat_MousePosition;
+        public InputAction @Cancel => m_Wrapper.m_TacticalCombat_Cancel;
         public InputActionMap Get() { return m_Wrapper.m_TacticalCombat; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -160,6 +240,15 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
                 @UnitMove.started -= m_Wrapper.m_TacticalCombatActionsCallbackInterface.OnUnitMove;
                 @UnitMove.performed -= m_Wrapper.m_TacticalCombatActionsCallbackInterface.OnUnitMove;
                 @UnitMove.canceled -= m_Wrapper.m_TacticalCombatActionsCallbackInterface.OnUnitMove;
+                @PickPosition.started -= m_Wrapper.m_TacticalCombatActionsCallbackInterface.OnPickPosition;
+                @PickPosition.performed -= m_Wrapper.m_TacticalCombatActionsCallbackInterface.OnPickPosition;
+                @PickPosition.canceled -= m_Wrapper.m_TacticalCombatActionsCallbackInterface.OnPickPosition;
+                @MousePosition.started -= m_Wrapper.m_TacticalCombatActionsCallbackInterface.OnMousePosition;
+                @MousePosition.performed -= m_Wrapper.m_TacticalCombatActionsCallbackInterface.OnMousePosition;
+                @MousePosition.canceled -= m_Wrapper.m_TacticalCombatActionsCallbackInterface.OnMousePosition;
+                @Cancel.started -= m_Wrapper.m_TacticalCombatActionsCallbackInterface.OnCancel;
+                @Cancel.performed -= m_Wrapper.m_TacticalCombatActionsCallbackInterface.OnCancel;
+                @Cancel.canceled -= m_Wrapper.m_TacticalCombatActionsCallbackInterface.OnCancel;
             }
             m_Wrapper.m_TacticalCombatActionsCallbackInterface = instance;
             if (instance != null)
@@ -170,6 +259,15 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
                 @UnitMove.started += instance.OnUnitMove;
                 @UnitMove.performed += instance.OnUnitMove;
                 @UnitMove.canceled += instance.OnUnitMove;
+                @PickPosition.started += instance.OnPickPosition;
+                @PickPosition.performed += instance.OnPickPosition;
+                @PickPosition.canceled += instance.OnPickPosition;
+                @MousePosition.started += instance.OnMousePosition;
+                @MousePosition.performed += instance.OnMousePosition;
+                @MousePosition.canceled += instance.OnMousePosition;
+                @Cancel.started += instance.OnCancel;
+                @Cancel.performed += instance.OnCancel;
+                @Cancel.canceled += instance.OnCancel;
             }
         }
     }
@@ -178,5 +276,8 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
     {
         void OnEndTurn(InputAction.CallbackContext context);
         void OnUnitMove(InputAction.CallbackContext context);
+        void OnPickPosition(InputAction.CallbackContext context);
+        void OnMousePosition(InputAction.CallbackContext context);
+        void OnCancel(InputAction.CallbackContext context);
     }
 }
