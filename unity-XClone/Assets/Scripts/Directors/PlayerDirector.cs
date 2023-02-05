@@ -21,13 +21,12 @@ public class PlayerDirector : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
-    {
+    void Update(){
         
     }
 
     public void SetUnitMove(Action a){
-        input.TacticalCombat.UnitMove.performed += (cc => a());
+        input.TacticalCombat.Key1.performed += (cc => a());
     }
 
     // TODO: Update this to eventually get all of the checking information from somewhere else, maybe pass in a function which returns a flag?

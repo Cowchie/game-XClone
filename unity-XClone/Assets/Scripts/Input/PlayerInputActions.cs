@@ -37,15 +37,6 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""UnitMove"",
-                    ""type"": ""Button"",
-                    ""id"": ""0f8b89ed-e9dd-492a-b702-d0b4bd158803"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
-                },
-                {
                     ""name"": ""PickPosition"",
                     ""type"": ""Button"",
                     ""id"": ""1a2d181a-eedd-4ae8-b126-038d0612cd36"",
@@ -67,6 +58,96 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
                     ""name"": ""Cancel"",
                     ""type"": ""Button"",
                     ""id"": ""04d3ad7a-02ad-4a7a-a931-1974c70173a3"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Key1"",
+                    ""type"": ""Button"",
+                    ""id"": ""0f8b89ed-e9dd-492a-b702-d0b4bd158803"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Key2"",
+                    ""type"": ""Button"",
+                    ""id"": ""da8c28aa-b5d0-45ab-8b44-a30d18854e2c"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Key3"",
+                    ""type"": ""Button"",
+                    ""id"": ""74a0066a-9388-4d9b-aaf3-08d58fef15f4"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Key4"",
+                    ""type"": ""Button"",
+                    ""id"": ""32d3411f-cf26-41b2-989f-73a4ffc045fc"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Key5"",
+                    ""type"": ""Button"",
+                    ""id"": ""095c095f-bcaf-4af9-9678-196459a99921"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Key6"",
+                    ""type"": ""Button"",
+                    ""id"": ""709e4166-ea6e-4fd7-9280-b8e570b44c92"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Key7"",
+                    ""type"": ""Button"",
+                    ""id"": ""8daeff56-7e10-4565-8d63-783a2a1735bb"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Key8"",
+                    ""type"": ""Button"",
+                    ""id"": ""92bdccbc-eb07-4bb5-92c7-7e392b6576d3"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Key9"",
+                    ""type"": ""Button"",
+                    ""id"": ""0a515416-3fcc-42bd-8b85-c504ea047377"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Key0"",
+                    ""type"": ""Button"",
+                    ""id"": ""10fd909a-c474-4678-ae74-57a432e38db7"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """",
@@ -93,17 +174,6 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""EndTurn"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""8e326f03-2c90-463b-801e-1b1f5417e0aa"",
-                    ""path"": ""<Keyboard>/1"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""UnitMove"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -150,6 +220,116 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
                     ""action"": ""MousePosition"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""8e326f03-2c90-463b-801e-1b1f5417e0aa"",
+                    ""path"": ""<Keyboard>/1"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Key1"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""ab762e75-35e7-48d7-b7b9-a27f5db7aedc"",
+                    ""path"": ""<Keyboard>/2"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Key2"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""47b89b3b-6ac3-46ec-aec9-695e766dfdbd"",
+                    ""path"": ""<Keyboard>/3"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Key3"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""46c9bcdd-f42c-4fb8-96ce-2f2fce11bcc3"",
+                    ""path"": ""<Keyboard>/4"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Key4"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""cede025d-80f5-4657-b27d-1544f8a9bb92"",
+                    ""path"": ""<Keyboard>/6"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Key6"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""65c42f83-b99a-49d5-9d18-56cb62ffa0e2"",
+                    ""path"": ""<Keyboard>/7"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Key7"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""5a7e685c-e622-478e-afdf-2448d8c86148"",
+                    ""path"": ""<Keyboard>/8"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Key8"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""564ab770-ac43-4a3c-aed3-e53a9132c9eb"",
+                    ""path"": ""<Keyboard>/9"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Key9"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""23794aa5-f8ba-43e8-b8d0-357e17cc7167"",
+                    ""path"": ""<Keyboard>/0"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Key0"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""9c91b3b0-b4e9-4505-9c38-05cb45c0d773"",
+                    ""path"": ""<Keyboard>/5"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Key5"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -159,10 +339,19 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
         // TacticalCombat
         m_TacticalCombat = asset.FindActionMap("TacticalCombat", throwIfNotFound: true);
         m_TacticalCombat_EndTurn = m_TacticalCombat.FindAction("EndTurn", throwIfNotFound: true);
-        m_TacticalCombat_UnitMove = m_TacticalCombat.FindAction("UnitMove", throwIfNotFound: true);
         m_TacticalCombat_PickPosition = m_TacticalCombat.FindAction("PickPosition", throwIfNotFound: true);
         m_TacticalCombat_MousePosition = m_TacticalCombat.FindAction("MousePosition", throwIfNotFound: true);
         m_TacticalCombat_Cancel = m_TacticalCombat.FindAction("Cancel", throwIfNotFound: true);
+        m_TacticalCombat_Key1 = m_TacticalCombat.FindAction("Key1", throwIfNotFound: true);
+        m_TacticalCombat_Key2 = m_TacticalCombat.FindAction("Key2", throwIfNotFound: true);
+        m_TacticalCombat_Key3 = m_TacticalCombat.FindAction("Key3", throwIfNotFound: true);
+        m_TacticalCombat_Key4 = m_TacticalCombat.FindAction("Key4", throwIfNotFound: true);
+        m_TacticalCombat_Key5 = m_TacticalCombat.FindAction("Key5", throwIfNotFound: true);
+        m_TacticalCombat_Key6 = m_TacticalCombat.FindAction("Key6", throwIfNotFound: true);
+        m_TacticalCombat_Key7 = m_TacticalCombat.FindAction("Key7", throwIfNotFound: true);
+        m_TacticalCombat_Key8 = m_TacticalCombat.FindAction("Key8", throwIfNotFound: true);
+        m_TacticalCombat_Key9 = m_TacticalCombat.FindAction("Key9", throwIfNotFound: true);
+        m_TacticalCombat_Key0 = m_TacticalCombat.FindAction("Key0", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -223,19 +412,37 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
     private readonly InputActionMap m_TacticalCombat;
     private ITacticalCombatActions m_TacticalCombatActionsCallbackInterface;
     private readonly InputAction m_TacticalCombat_EndTurn;
-    private readonly InputAction m_TacticalCombat_UnitMove;
     private readonly InputAction m_TacticalCombat_PickPosition;
     private readonly InputAction m_TacticalCombat_MousePosition;
     private readonly InputAction m_TacticalCombat_Cancel;
+    private readonly InputAction m_TacticalCombat_Key1;
+    private readonly InputAction m_TacticalCombat_Key2;
+    private readonly InputAction m_TacticalCombat_Key3;
+    private readonly InputAction m_TacticalCombat_Key4;
+    private readonly InputAction m_TacticalCombat_Key5;
+    private readonly InputAction m_TacticalCombat_Key6;
+    private readonly InputAction m_TacticalCombat_Key7;
+    private readonly InputAction m_TacticalCombat_Key8;
+    private readonly InputAction m_TacticalCombat_Key9;
+    private readonly InputAction m_TacticalCombat_Key0;
     public struct TacticalCombatActions
     {
         private @PlayerInputActions m_Wrapper;
         public TacticalCombatActions(@PlayerInputActions wrapper) { m_Wrapper = wrapper; }
         public InputAction @EndTurn => m_Wrapper.m_TacticalCombat_EndTurn;
-        public InputAction @UnitMove => m_Wrapper.m_TacticalCombat_UnitMove;
         public InputAction @PickPosition => m_Wrapper.m_TacticalCombat_PickPosition;
         public InputAction @MousePosition => m_Wrapper.m_TacticalCombat_MousePosition;
         public InputAction @Cancel => m_Wrapper.m_TacticalCombat_Cancel;
+        public InputAction @Key1 => m_Wrapper.m_TacticalCombat_Key1;
+        public InputAction @Key2 => m_Wrapper.m_TacticalCombat_Key2;
+        public InputAction @Key3 => m_Wrapper.m_TacticalCombat_Key3;
+        public InputAction @Key4 => m_Wrapper.m_TacticalCombat_Key4;
+        public InputAction @Key5 => m_Wrapper.m_TacticalCombat_Key5;
+        public InputAction @Key6 => m_Wrapper.m_TacticalCombat_Key6;
+        public InputAction @Key7 => m_Wrapper.m_TacticalCombat_Key7;
+        public InputAction @Key8 => m_Wrapper.m_TacticalCombat_Key8;
+        public InputAction @Key9 => m_Wrapper.m_TacticalCombat_Key9;
+        public InputAction @Key0 => m_Wrapper.m_TacticalCombat_Key0;
         public InputActionMap Get() { return m_Wrapper.m_TacticalCombat; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -248,9 +455,6 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
                 @EndTurn.started -= m_Wrapper.m_TacticalCombatActionsCallbackInterface.OnEndTurn;
                 @EndTurn.performed -= m_Wrapper.m_TacticalCombatActionsCallbackInterface.OnEndTurn;
                 @EndTurn.canceled -= m_Wrapper.m_TacticalCombatActionsCallbackInterface.OnEndTurn;
-                @UnitMove.started -= m_Wrapper.m_TacticalCombatActionsCallbackInterface.OnUnitMove;
-                @UnitMove.performed -= m_Wrapper.m_TacticalCombatActionsCallbackInterface.OnUnitMove;
-                @UnitMove.canceled -= m_Wrapper.m_TacticalCombatActionsCallbackInterface.OnUnitMove;
                 @PickPosition.started -= m_Wrapper.m_TacticalCombatActionsCallbackInterface.OnPickPosition;
                 @PickPosition.performed -= m_Wrapper.m_TacticalCombatActionsCallbackInterface.OnPickPosition;
                 @PickPosition.canceled -= m_Wrapper.m_TacticalCombatActionsCallbackInterface.OnPickPosition;
@@ -260,6 +464,36 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
                 @Cancel.started -= m_Wrapper.m_TacticalCombatActionsCallbackInterface.OnCancel;
                 @Cancel.performed -= m_Wrapper.m_TacticalCombatActionsCallbackInterface.OnCancel;
                 @Cancel.canceled -= m_Wrapper.m_TacticalCombatActionsCallbackInterface.OnCancel;
+                @Key1.started -= m_Wrapper.m_TacticalCombatActionsCallbackInterface.OnKey1;
+                @Key1.performed -= m_Wrapper.m_TacticalCombatActionsCallbackInterface.OnKey1;
+                @Key1.canceled -= m_Wrapper.m_TacticalCombatActionsCallbackInterface.OnKey1;
+                @Key2.started -= m_Wrapper.m_TacticalCombatActionsCallbackInterface.OnKey2;
+                @Key2.performed -= m_Wrapper.m_TacticalCombatActionsCallbackInterface.OnKey2;
+                @Key2.canceled -= m_Wrapper.m_TacticalCombatActionsCallbackInterface.OnKey2;
+                @Key3.started -= m_Wrapper.m_TacticalCombatActionsCallbackInterface.OnKey3;
+                @Key3.performed -= m_Wrapper.m_TacticalCombatActionsCallbackInterface.OnKey3;
+                @Key3.canceled -= m_Wrapper.m_TacticalCombatActionsCallbackInterface.OnKey3;
+                @Key4.started -= m_Wrapper.m_TacticalCombatActionsCallbackInterface.OnKey4;
+                @Key4.performed -= m_Wrapper.m_TacticalCombatActionsCallbackInterface.OnKey4;
+                @Key4.canceled -= m_Wrapper.m_TacticalCombatActionsCallbackInterface.OnKey4;
+                @Key5.started -= m_Wrapper.m_TacticalCombatActionsCallbackInterface.OnKey5;
+                @Key5.performed -= m_Wrapper.m_TacticalCombatActionsCallbackInterface.OnKey5;
+                @Key5.canceled -= m_Wrapper.m_TacticalCombatActionsCallbackInterface.OnKey5;
+                @Key6.started -= m_Wrapper.m_TacticalCombatActionsCallbackInterface.OnKey6;
+                @Key6.performed -= m_Wrapper.m_TacticalCombatActionsCallbackInterface.OnKey6;
+                @Key6.canceled -= m_Wrapper.m_TacticalCombatActionsCallbackInterface.OnKey6;
+                @Key7.started -= m_Wrapper.m_TacticalCombatActionsCallbackInterface.OnKey7;
+                @Key7.performed -= m_Wrapper.m_TacticalCombatActionsCallbackInterface.OnKey7;
+                @Key7.canceled -= m_Wrapper.m_TacticalCombatActionsCallbackInterface.OnKey7;
+                @Key8.started -= m_Wrapper.m_TacticalCombatActionsCallbackInterface.OnKey8;
+                @Key8.performed -= m_Wrapper.m_TacticalCombatActionsCallbackInterface.OnKey8;
+                @Key8.canceled -= m_Wrapper.m_TacticalCombatActionsCallbackInterface.OnKey8;
+                @Key9.started -= m_Wrapper.m_TacticalCombatActionsCallbackInterface.OnKey9;
+                @Key9.performed -= m_Wrapper.m_TacticalCombatActionsCallbackInterface.OnKey9;
+                @Key9.canceled -= m_Wrapper.m_TacticalCombatActionsCallbackInterface.OnKey9;
+                @Key0.started -= m_Wrapper.m_TacticalCombatActionsCallbackInterface.OnKey0;
+                @Key0.performed -= m_Wrapper.m_TacticalCombatActionsCallbackInterface.OnKey0;
+                @Key0.canceled -= m_Wrapper.m_TacticalCombatActionsCallbackInterface.OnKey0;
             }
             m_Wrapper.m_TacticalCombatActionsCallbackInterface = instance;
             if (instance != null)
@@ -267,9 +501,6 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
                 @EndTurn.started += instance.OnEndTurn;
                 @EndTurn.performed += instance.OnEndTurn;
                 @EndTurn.canceled += instance.OnEndTurn;
-                @UnitMove.started += instance.OnUnitMove;
-                @UnitMove.performed += instance.OnUnitMove;
-                @UnitMove.canceled += instance.OnUnitMove;
                 @PickPosition.started += instance.OnPickPosition;
                 @PickPosition.performed += instance.OnPickPosition;
                 @PickPosition.canceled += instance.OnPickPosition;
@@ -279,6 +510,36 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
                 @Cancel.started += instance.OnCancel;
                 @Cancel.performed += instance.OnCancel;
                 @Cancel.canceled += instance.OnCancel;
+                @Key1.started += instance.OnKey1;
+                @Key1.performed += instance.OnKey1;
+                @Key1.canceled += instance.OnKey1;
+                @Key2.started += instance.OnKey2;
+                @Key2.performed += instance.OnKey2;
+                @Key2.canceled += instance.OnKey2;
+                @Key3.started += instance.OnKey3;
+                @Key3.performed += instance.OnKey3;
+                @Key3.canceled += instance.OnKey3;
+                @Key4.started += instance.OnKey4;
+                @Key4.performed += instance.OnKey4;
+                @Key4.canceled += instance.OnKey4;
+                @Key5.started += instance.OnKey5;
+                @Key5.performed += instance.OnKey5;
+                @Key5.canceled += instance.OnKey5;
+                @Key6.started += instance.OnKey6;
+                @Key6.performed += instance.OnKey6;
+                @Key6.canceled += instance.OnKey6;
+                @Key7.started += instance.OnKey7;
+                @Key7.performed += instance.OnKey7;
+                @Key7.canceled += instance.OnKey7;
+                @Key8.started += instance.OnKey8;
+                @Key8.performed += instance.OnKey8;
+                @Key8.canceled += instance.OnKey8;
+                @Key9.started += instance.OnKey9;
+                @Key9.performed += instance.OnKey9;
+                @Key9.canceled += instance.OnKey9;
+                @Key0.started += instance.OnKey0;
+                @Key0.performed += instance.OnKey0;
+                @Key0.canceled += instance.OnKey0;
             }
         }
     }
@@ -286,9 +547,18 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
     public interface ITacticalCombatActions
     {
         void OnEndTurn(InputAction.CallbackContext context);
-        void OnUnitMove(InputAction.CallbackContext context);
         void OnPickPosition(InputAction.CallbackContext context);
         void OnMousePosition(InputAction.CallbackContext context);
         void OnCancel(InputAction.CallbackContext context);
+        void OnKey1(InputAction.CallbackContext context);
+        void OnKey2(InputAction.CallbackContext context);
+        void OnKey3(InputAction.CallbackContext context);
+        void OnKey4(InputAction.CallbackContext context);
+        void OnKey5(InputAction.CallbackContext context);
+        void OnKey6(InputAction.CallbackContext context);
+        void OnKey7(InputAction.CallbackContext context);
+        void OnKey8(InputAction.CallbackContext context);
+        void OnKey9(InputAction.CallbackContext context);
+        void OnKey0(InputAction.CallbackContext context);
     }
 }

@@ -4,6 +4,12 @@ using UnityEngine;
 
 using StateTree;
 
+public struct UnitActionTree{
+    public CallDoNext<TurnTree>     StartChooseAction;
+    public DelayDoNext<TurnTree>    DelayChooseAction;
+    public CallDoNext<TurnTree>     EndChooseAction;
+}
+
 public struct TurnTree{
     public CallDoNext<TurnTree>     StartBattle;
     public CycleBranches<TurnTree>  BetweenTurns;
