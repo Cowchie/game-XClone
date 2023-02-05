@@ -10,8 +10,8 @@ public class PlayerDirector : MonoBehaviour
     public PlayerInputActions input;
 
     private LayerMask map_layer;
-    // Start is called before the first frame update
-    void Start(){
+    // Awake is called before Start is called before the first frame update
+    void Awake(){
         // Initializes the inputs
         input = new PlayerInputActions();
         input.TacticalCombat.Enable();

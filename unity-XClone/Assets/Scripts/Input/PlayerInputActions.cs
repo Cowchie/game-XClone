@@ -87,6 +87,17 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
+                    ""id"": ""22e82279-5c9a-4972-93d2-eff8aaf72068"",
+                    ""path"": ""<Keyboard>/enter"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""EndTurn"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
                     ""id"": ""8e326f03-2c90-463b-801e-1b1f5417e0aa"",
                     ""path"": ""<Keyboard>/1"",
                     ""interactions"": """",
