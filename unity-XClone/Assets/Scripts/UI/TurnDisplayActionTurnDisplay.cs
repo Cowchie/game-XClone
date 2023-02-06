@@ -10,7 +10,6 @@ public class TurnDisplayActionTurnDisplay : MonoBehaviour{
     // Start is called before the first frame update
     void Start(){
         txt = GetComponentInChildren<TextMeshProUGUI>();
-        Debug.Log(txt);
         TurnManager.tree.StartBattle.OnCenterOn += set_text("...");
         TurnManager.tree.PlayerStartTurn.OnCenterOn += set_text("Turn Start!");
         TurnManager.tree.PlayerStartChooseActions.OnCenterOn += set_text("Choose an action");

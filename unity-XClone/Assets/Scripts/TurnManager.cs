@@ -86,9 +86,8 @@ public class TurnManager : MonoBehaviour
             LogOnCenterOn("     Cancel Move");
 }
 
-    // FIXME: This does not work!
-    tree.PlayerDelayChooseUnitAction = new DelayDoNext<TurnTree>[11];
-    tree.PlayerEndChooseUnitAction = new CallDoNext<TurnTree>[11];
+    tree.PlayerDelayChooseUnitAction    = new DelayDoNext<TurnTree>[11];
+    tree.PlayerEndChooseUnitAction      = new CallDoNext<TurnTree>[11];
 { // Branch which triggers at the start of the choose action step
         tree.PlayerStartChooseActions = new CallDoNext<TurnTree>(
             s => s.PlayerFirstOfActions
@@ -97,23 +96,26 @@ public class TurnManager : MonoBehaviour
             LogOnCenterOn("     Please choose an action...");
 }
 { // Branch which waits for the first action the player chooses.
-    // TODO: Is this alright? Probably right?
-    GetBranch<TurnTree>[] get_branches = new GetBranch<TurnTree>[11];
-    for (int j = 0; j < get_branches.Length; j++){
-        get_branches[j] = s => s.PlayerDelayChooseUnitAction[j];
+    GetBranch<TurnTree>[] get_branches = new GetBranch<TurnTree>[12];
+    for (int j = 0; j < tree.PlayerDelayChooseUnitAction.Length; j++){
+        // TODO: This is retarded.
+        int k = j;
+        get_branches[k] = s => s.PlayerDelayChooseUnitAction[k];
     }
-    get_branches.Append(s => s.PlayerDelayEndTurn);
+    get_branches[11] = s => s.PlayerDelayEndTurn;
+
         tree.PlayerFirstOfActions = new FirstOfNext<TurnTree>(
             get_branches
         );
 }
-{ // Branch which waits for the player to choose an action.
+{ // Branch which waits for the player to choose action i.
     for (int i = 0; i < tree.PlayerDelayChooseUnitAction.Length; i++){
-        tree.PlayerDelayChooseUnitAction[i] = new DelayDoNext<TurnTree>(
+        // TODO: This is retarded.
+        int k = i;
+        tree.PlayerDelayChooseUnitAction[k] = new DelayDoNext<TurnTree>(
             out var player_choose_action_callback, 
-            s => s.PlayerEndChooseUnitAction[i]
+            s => s.PlayerEndChooseUnitAction[k]
         );
-        // TODO: Do something with player_choose_action_callback
         Director.SetActionKey(player_choose_action_callback, i);
     }
 }
@@ -127,9 +129,12 @@ public class TurnManager : MonoBehaviour
     }
 
     for (int i = 0; i < tree.PlayerEndChooseUnitAction.Length; i++){
+        int k = i;
         tree.PlayerEndChooseUnitAction[i] = new CallDoNext<TurnTree>(
             get_branches[i]
         );
+
+        tree.PlayerEndChooseUnitAction[k].OnCenterOn += LogOnCenterOn("Action " + k.ToString());
     }
 }
 
