@@ -42,6 +42,15 @@
                     "initialStateCheck": false
                 },
                 {
+                    "name": "Key0",
+                    "type": "Button",
+                    "id": "10fd909a-c474-4678-ae74-57a432e38db7",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
                     "name": "Key1",
                     "type": "Button",
                     "id": "0f8b89ed-e9dd-492a-b702-d0b4bd158803",
@@ -123,9 +132,9 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "Key0",
+                    "name": "Key10",
                     "type": "Button",
-                    "id": "10fd909a-c474-4678-ae74-57a432e38db7",
+                    "id": "ea7d7dcc-d9b7-48ec-8d1e-8ef1d638b10c",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "",
@@ -289,8 +298,19 @@
                 },
                 {
                     "name": "",
+                    "id": "9c91b3b0-b4e9-4505-9c38-05cb45c0d773",
+                    "path": "<Keyboard>/5",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Key5",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
                     "id": "23794aa5-f8ba-43e8-b8d0-357e17cc7167",
-                    "path": "<Keyboard>/0",
+                    "path": "<Keyboard>/backquote",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -300,12 +320,12 @@
                 },
                 {
                     "name": "",
-                    "id": "9c91b3b0-b4e9-4505-9c38-05cb45c0d773",
-                    "path": "<Keyboard>/5",
+                    "id": "69c53df8-f5d9-4eab-9103-91912814fb49",
+                    "path": "<Keyboard>/0",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Key5",
+                    "action": "Key10",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

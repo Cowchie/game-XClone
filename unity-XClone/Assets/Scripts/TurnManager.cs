@@ -1,14 +1,9 @@
+using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 using StateTree;
-
-public struct UnitActionTree{
-    public CallDoNext<TurnTree>     StartChooseAction;
-    public DelayDoNext<TurnTree>    DelayChooseAction;
-    public CallDoNext<TurnTree>     EndChooseAction;
-}
 
 public struct TurnTree{
     public CallDoNext<TurnTree>     StartBattle;
@@ -16,16 +11,23 @@ public struct TurnTree{
 
     // Player Stuff
     public CallDoNext<TurnTree>     PlayerStartTurn;
-    public CallDoNext<TurnTree>     PlayerStartChooseAction;
-    public DelayDoNext<TurnTree>    DelayPlayerChooseAction;
-    public CallDoNext<TurnTree>     PlayerStartUnitMove;
-    public DelayDoNext<TurnTree>    PlayerDelayPickPosition;
-    public CallDoNext<TurnTree>     PlayerPickedPosition;
-    public DelayDoNext<TurnTree>    PlayerDelayCancelMove;
-    public CallDoNext<TurnTree>     PlayerCancelMove;
-    public FirstOfNext<TurnTree>    PlayerFirstOfPickPositionOrCancel;
-    public DelayDoNext<TurnTree>    PlayerDelayEndTurn;
+
+    public DelayDoNext<TurnTree>    PlayerDelayCancel;
+    public CallDoNext<TurnTree>     PlayerCancel;
+    
+    public CallDoNext<TurnTree>     PlayerStartChooseActions;
     public FirstOfNext<TurnTree>    PlayerFirstOfActions;
+    public DelayDoNext<TurnTree>[]  PlayerDelayChooseUnitAction;
+    public CallDoNext<TurnTree>[]   PlayerEndChooseUnitAction;
+    
+    public FirstOfNext<TurnTree>    PlayerFirstOfPickPosition;
+
+    public CallDoNext<TurnTree>     PlayerStartChoosePosition;
+    public DelayDoNext<TurnTree>    PlayerDelayChoosePosition;
+    public CallDoNext<TurnTree>     PlayerEndChoosePosition;
+
+
+    public DelayDoNext<TurnTree>    PlayerDelayEndTurn;
     public CallDoNext<TurnTree>     PlayerEndTurn;
 
     // Enemy AI stuff
@@ -59,81 +61,114 @@ public class TurnManager : MonoBehaviour
             s => s.EnemyStartTurn
         );
 }
+
+// Player's turn
 { // Branch which triggers at the start of the player's turn.
         tree.PlayerStartTurn = new CallDoNext<TurnTree>(
-            s => s.PlayerStartChooseAction
+            s => s.PlayerStartChooseActions
         );
         tree.PlayerStartTurn.OnCenterOn += 
             LogOnCenterOn("Start Player Turn!");
 }
+
+{ // Branch which waits for the player to cancel a selection.
+        tree.PlayerDelayCancel = new DelayDoNext<TurnTree>(
+            out var player_cancel_callback, 
+            s => s.PlayerCancel
+        );
+        Director.SetCancel(player_cancel_callback);
+}
+{ // Branch which triggers when the player chooses to cancel a selection.
+        tree.PlayerCancel = new CallDoNext<TurnTree>(
+            s => s.PlayerStartChooseActions
+        );
+        tree.PlayerCancel.OnCenterOn += 
+            LogOnCenterOn("     Cancel Move");
+}
+
+    // FIXME: This does not work!
+    tree.PlayerDelayChooseUnitAction = new DelayDoNext<TurnTree>[11];
+    tree.PlayerEndChooseUnitAction = new CallDoNext<TurnTree>[11];
 { // Branch which triggers at the start of the choose action step
-        tree.PlayerStartChooseAction = new CallDoNext<TurnTree>(
+        tree.PlayerStartChooseActions = new CallDoNext<TurnTree>(
             s => s.PlayerFirstOfActions
         );
-        tree.PlayerStartChooseAction.OnCenterOn += 
+        tree.PlayerStartChooseActions.OnCenterOn += 
             LogOnCenterOn("     Please choose an action...");
 }
-{ // Branch which waits for the player to choose an action.
-        tree.DelayPlayerChooseAction = new DelayDoNext<TurnTree>(
-            out var player_unit_move_callback, 
-            s => s.PlayerStartUnitMove
+{ // Branch which waits for the first action the player chooses.
+    // TODO: Is this alright? Probably right?
+    GetBranch<TurnTree>[] get_branches = new GetBranch<TurnTree>[11];
+    for (int j = 0; j < get_branches.Length; j++){
+        get_branches[j] = s => s.PlayerDelayChooseUnitAction[j];
+    }
+    get_branches.Append(s => s.PlayerDelayEndTurn);
+        tree.PlayerFirstOfActions = new FirstOfNext<TurnTree>(
+            get_branches
         );
-        Director.SetUnitMove(player_unit_move_callback);
 }
-{ // Branch which triggers when player chooses to move.
-        tree.PlayerStartUnitMove = new CallDoNext<TurnTree>(
-            s => s.PlayerFirstOfPickPositionOrCancel
+{ // Branch which waits for the player to choose an action.
+    for (int i = 0; i < tree.PlayerDelayChooseUnitAction.Length; i++){
+        tree.PlayerDelayChooseUnitAction[i] = new DelayDoNext<TurnTree>(
+            out var player_choose_action_callback, 
+            s => s.PlayerEndChooseUnitAction[i]
         );
-        tree.PlayerStartUnitMove.OnCenterOn += 
+        // TODO: Do something with player_choose_action_callback
+        Director.SetActionKey(player_choose_action_callback, i);
+    }
+}
+{ // Branch which triggers when the player has chosen an action.
+    // TODO: Find a way to make this depend on the chosen unit.
+    GetBranch<TurnTree>[] get_branches = new GetBranch<TurnTree>[11];
+    get_branches[0] = s => s.PlayerStartChooseActions;
+    get_branches[1] = s => s.PlayerStartChoosePosition;
+    for (int j = 2; j < get_branches.Length; j++){
+        get_branches[j] = s => s.PlayerStartChooseActions;
+    }
+
+    for (int i = 0; i < tree.PlayerEndChooseUnitAction.Length; i++){
+        tree.PlayerEndChooseUnitAction[i] = new CallDoNext<TurnTree>(
+            get_branches[i]
+        );
+    }
+}
+
+{ // Branch which waits for the first position the player chooses.
+        tree.PlayerFirstOfPickPosition = new FirstOfNext<TurnTree>(
+            s => s.PlayerDelayChoosePosition, 
+            s => s.PlayerDelayCancel,
+            s => s.PlayerDelayEndTurn
+        );
+}
+
+{ // Branch which triggers when player needs to choose a position.
+        tree.PlayerStartChoosePosition = new CallDoNext<TurnTree>(
+            s => s.PlayerFirstOfPickPosition
+        );
+        tree.PlayerStartChoosePosition.OnCenterOn += 
             LogOnCenterOn("     Choose a place for the unit to move!");
 }
 { // Branch which waits for the player to select a position.
-        tree.PlayerDelayPickPosition = new DelayDoNext<TurnTree>(
+        tree.PlayerDelayChoosePosition = new DelayDoNext<TurnTree>(
             out var player_pick_position_callback, 
-            s => s.PlayerPickedPosition
+            s => s.PlayerEndChoosePosition
         );
         Director.SetPickPosition(player_pick_position_callback);
 }
 { // Branch which triggers when the player choses a position.
-        tree.PlayerPickedPosition = new CallDoNext<TurnTree>(
-            s => s.PlayerStartChooseAction
+        tree.PlayerEndChoosePosition = new CallDoNext<TurnTree>(
+            s => s.PlayerStartChooseActions
         );
-        tree.PlayerPickedPosition.OnCenterOn += 
+        tree.PlayerEndChoosePosition.OnCenterOn += 
             LogOnCenterOn("     Player picked a position!");
 }
-{ // Branch which waits for the player to cancel the current move.
-        tree.PlayerDelayCancelMove = new DelayDoNext<TurnTree>(
-            out var player_cancel_callback, 
-            s => s.PlayerCancelMove
-        );
-        Director.SetCancel(player_cancel_callback);
-}
-{ // Branch which triggers when the player chooses to cancel the move.
-        tree.PlayerCancelMove = new CallDoNext<TurnTree>(
-            s => s.PlayerStartChooseAction
-        );
-        tree.PlayerCancelMove.OnCenterOn += 
-            LogOnCenterOn("     Cancel Move");
-}
-{ // Branch which waits for the player to either select a position, cancel, or end turn.
-        tree.PlayerFirstOfPickPositionOrCancel = new FirstOfNext<TurnTree>(
-            s => s.PlayerDelayPickPosition, 
-            s => s.PlayerDelayCancelMove,
-            s => s.PlayerDelayEndTurn
-        );
-}
+
 { // Branch which waits for the player to press the end turn button.
         tree.PlayerDelayEndTurn = new DelayDoNext<TurnTree>(
             out var player_end_turn_callback, 
             s => s.PlayerEndTurn
         );
         Director.SetEndTurn(player_end_turn_callback);
-}
-{ // Branch which waits for the player to take some action.
-        tree.PlayerFirstOfActions = new FirstOfNext<TurnTree>(
-            s => s.DelayPlayerChooseAction, 
-            s => s.PlayerDelayEndTurn
-        );
 }
 { // Branch which triggers at the end of the player's turn.
         tree.PlayerEndTurn = new CallDoNext<TurnTree>(
@@ -142,7 +177,8 @@ public class TurnManager : MonoBehaviour
         tree.PlayerEndTurn.OnCenterOn += 
             LogOnCenterOn("End Player Turn");
 }
-    
+
+// Enemy's turn
 { // Branch which triggers at the start of the enemy turn.
         tree.EnemyStartTurn = new CallDoNext<TurnTree>(
             s => s.EnemyDelayTurn

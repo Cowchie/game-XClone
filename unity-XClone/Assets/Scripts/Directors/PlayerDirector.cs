@@ -25,8 +25,28 @@ public class PlayerDirector : MonoBehaviour
         
     }
 
-    public void SetUnitMove(Action a){
-        input.TacticalCombat.Key1.performed += (cc => a());
+    public void SetActionKey(Action a, int index){
+        KeyAtIndex(input.TacticalCombat, index).performed += (cc => a());
+    }
+
+    private static InputAction KeyAtIndex(
+        PlayerInputActions.TacticalCombatActions tactical_combat, 
+        int index
+    ){
+        switch (index){
+            case 0: return tactical_combat.Key0;
+            case 1: return tactical_combat.Key1;
+            case 2: return tactical_combat.Key2;
+            case 3: return tactical_combat.Key3;
+            case 4: return tactical_combat.Key4;
+            case 5: return tactical_combat.Key5;
+            case 6: return tactical_combat.Key6;
+            case 7: return tactical_combat.Key7;
+            case 8: return tactical_combat.Key8;
+            case 9: return tactical_combat.Key9;
+            case 10: return tactical_combat.Key10;
+            default: throw new ArgumentOutOfRangeException("Need to input value in range 0 to 11");
+        }
     }
 
     // TODO: Update this to eventually get all of the checking information from somewhere else, maybe pass in a function which returns a flag?

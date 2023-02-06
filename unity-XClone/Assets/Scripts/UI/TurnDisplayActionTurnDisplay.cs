@@ -13,8 +13,8 @@ public class TurnDisplayActionTurnDisplay : MonoBehaviour{
         Debug.Log(txt);
         TurnManager.tree.StartBattle.OnCenterOn += set_text("...");
         TurnManager.tree.PlayerStartTurn.OnCenterOn += set_text("Turn Start!");
-        TurnManager.tree.PlayerStartChooseAction.OnCenterOn += set_text("Choose an action");
-        TurnManager.tree.PlayerStartUnitMove.OnCenterOn += set_text("Choose a position");
+        TurnManager.tree.PlayerStartChooseActions.OnCenterOn += set_text("Choose an action");
+        TurnManager.tree.PlayerStartChoosePosition.OnCenterOn += set_text("Choose a position");
         TurnManager.tree.PlayerEndTurn.OnCenterOn += set_text("...");
     }
 
