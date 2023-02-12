@@ -84,8 +84,6 @@ public class PlayerDirector : MonoBehaviour{
     }
 
     // TODO: Update this to eventually get all of the checking information from somewhere else, maybe pass in a function which returns a flag?
-    [SerializeField]
-    private Vector3 selected_position;
     public delegate bool RaycastConditions(
         Ray ray,
         out RaycastHit hit
@@ -99,19 +97,22 @@ public class PlayerDirector : MonoBehaviour{
             Ray mouse_ray = Camera.main.ScreenPointToRay(input.TacticalCombat.MousePosition.ReadValue<Vector2>());
             if (raycast_conditions(mouse_ray, out RaycastHit hit))
                 return;
-            selected_position = hit.point;
             a();
         });
     }
 
+    [SerializeField]
+    private Vector3 selected_position;
     public bool RaycastToGround(Ray ray, out RaycastHit hit){
         if (!Physics.Raycast(ray, out hit, 50f, map_layer))
             return false;
         if (hit.transform.tag != "GroundPlane")
             return false;
+        selected_position = hit.point;
         return true;
     }
 
+    private UnitMoveToPositionStraightLine asd;
     public bool RaycastToUnit(Ray ray, out RaycastHit hit){
         if (!Physics.Raycast(ray, out hit, 50f, not_crowd_layer))
             return false;
@@ -119,6 +120,7 @@ public class PlayerDirector : MonoBehaviour{
             = hit.transform.GetComponent<UnitMoveToPositionStraightLine>();
         if (unit_vis == null)
             return false;
+        asd = unit_vis;
         return true;
     }
 
