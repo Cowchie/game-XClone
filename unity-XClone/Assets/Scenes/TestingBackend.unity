@@ -258,6 +258,63 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 38366622}
   m_CullTransparentMesh: 1
+--- !u!1001 &131947640
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 8823896190581997434, guid: 8a5946210fcd2ca4da0da49a0c51f804, type: 3}
+      propertyPath: m_Name
+      value: Unit
+      objectReference: {fileID: 0}
+    - target: {fileID: 8823896190581997435, guid: 8a5946210fcd2ca4da0da49a0c51f804, type: 3}
+      propertyPath: m_RootOrder
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 8823896190581997435, guid: 8a5946210fcd2ca4da0da49a0c51f804, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8823896190581997435, guid: 8a5946210fcd2ca4da0da49a0c51f804, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8823896190581997435, guid: 8a5946210fcd2ca4da0da49a0c51f804, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8823896190581997435, guid: 8a5946210fcd2ca4da0da49a0c51f804, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8823896190581997435, guid: 8a5946210fcd2ca4da0da49a0c51f804, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8823896190581997435, guid: 8a5946210fcd2ca4da0da49a0c51f804, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8823896190581997435, guid: 8a5946210fcd2ca4da0da49a0c51f804, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8823896190581997435, guid: 8a5946210fcd2ca4da0da49a0c51f804, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8823896190581997435, guid: 8a5946210fcd2ca4da0da49a0c51f804, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8823896190581997435, guid: 8a5946210fcd2ca4da0da49a0c51f804, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 8a5946210fcd2ca4da0da49a0c51f804, type: 3}
 --- !u!1 &136254068
 GameObject:
   m_ObjectHideFlags: 0
@@ -475,8 +532,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CameraFacingDirection: {fileID: 1382143076}
   CameraOrbitPoint: {fileID: 1533209594}
-  MoveSpeed: 25
-  RotateSpeed: 24
+  MoveSpeed: 20
+  RotateSpeed: 64
   selected_position: {x: 0, y: 0, z: 0}
 --- !u!4 &432917886
 Transform:
@@ -720,6 +777,18 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2682125772845681516, guid: 7aab500004479b048a2859406e09302e, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2682125772845681516, guid: 7aab500004479b048a2859406e09302e, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 15.89
+      objectReference: {fileID: 0}
+    - target: {fileID: 2682125772845681516, guid: 7aab500004479b048a2859406e09302e, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -13.03
+      objectReference: {fileID: 0}
     - target: {fileID: 2682125772890060939, guid: 7aab500004479b048a2859406e09302e, type: 3}
       propertyPath: m_Name
       value: CameraOrbitPoint
@@ -867,7 +936,7 @@ Transform:
   m_GameObject: {fileID: 1472833734}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 10, y: 1, z: 10}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}

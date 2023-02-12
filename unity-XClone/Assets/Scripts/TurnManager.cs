@@ -162,7 +162,10 @@ public class TurnManager : MonoBehaviour
             out var player_pick_position_callback, 
             s => s.PlayerEndChoosePosition
         );
-        Director.SetPickPosition(player_pick_position_callback);
+        Director.SetPickPosition(
+            Director.RaycastToGround, 
+            player_pick_position_callback
+        );
 }
 { // Branch which triggers when the player choses a position.
         tree.PlayerEndChoosePosition = new CallDoNext<TurnTree>(

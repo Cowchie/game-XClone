@@ -15,6 +15,9 @@ public class PlayerDirector : MonoBehaviour{
     public float RotateSpeed;
 
     private LayerMask map_layer;
+    private LayerMask not_crowd_layer;
+
+
     // Awake is called before Start is called before the first frame update
     void Awake(){
         // Initializes the inputs
@@ -23,6 +26,7 @@ public class PlayerDirector : MonoBehaviour{
 
         // Initializes the physics layers
         map_layer = LayerMask.GetMask("Map") + LayerMask.GetMask("Blockers");
+        not_crowd_layer = -1 - LayerMask.GetMask("Crowd");
     }
 
     // Update is called once per frame
@@ -82,16 +86,40 @@ public class PlayerDirector : MonoBehaviour{
     // TODO: Update this to eventually get all of the checking information from somewhere else, maybe pass in a function which returns a flag?
     [SerializeField]
     private Vector3 selected_position;
-    public void SetPickPosition(Action a){
+    public delegate bool RaycastConditions(
+        Ray ray,
+        out RaycastHit hit
+    );
+
+    public void SetPickPosition(
+        RaycastConditions raycast_conditions, 
+        Action a
+    ){
         input.TacticalCombat.ClickPosition.canceled += (cc => {
             Ray mouse_ray = Camera.main.ScreenPointToRay(input.TacticalCombat.MousePosition.ReadValue<Vector2>());
-            if (!Physics.Raycast(mouse_ray, out RaycastHit hit, 50f, map_layer))
-                return;
-            if (hit.transform.tag != "GroundPlane")
+            if (raycast_conditions(mouse_ray, out RaycastHit hit))
                 return;
             selected_position = hit.point;
             a();
         });
+    }
+
+    public bool RaycastToGround(Ray ray, out RaycastHit hit){
+        if (!Physics.Raycast(ray, out hit, 50f, map_layer))
+            return false;
+        if (hit.transform.tag != "GroundPlane")
+            return false;
+        return true;
+    }
+
+    public bool RaycastToUnit(Ray ray, out RaycastHit hit){
+        if (!Physics.Raycast(ray, out hit, 50f, not_crowd_layer))
+            return false;
+        var unit_vis 
+            = hit.transform.GetComponent<UnitMoveToPositionStraightLine>();
+        if (unit_vis == null)
+            return false;
+        return true;
     }
 
     public void SetCancel(Action a){
