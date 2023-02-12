@@ -6,6 +6,33 @@
             "id": "f08e46e4-04c8-414c-a00e-2482dfa41636",
             "actions": [
                 {
+                    "name": "CameraMove",
+                    "type": "Value",
+                    "id": "6b799888-7c09-406f-81cd-614b7e099d28",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
+                    "name": "CameraRotateLeft",
+                    "type": "Button",
+                    "id": "e9bcf578-076b-4957-a0aa-3643ec871b1c",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "CameraRotateRight",
+                    "type": "Button",
+                    "id": "a06560a3-4dc3-4b85-99e8-3758d7d4c66d",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
                     "name": "EndTurn",
                     "type": "Button",
                     "id": "a4118021-28f9-4ee3-ae4e-2b1655fa707b",
@@ -15,7 +42,7 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "PickPosition",
+                    "name": "ClickPosition",
                     "type": "Button",
                     "id": "1a2d181a-eedd-4ae8-b126-038d0612cd36",
                     "expectedControlType": "Button",
@@ -144,34 +171,12 @@
             "bindings": [
                 {
                     "name": "",
-                    "id": "367e6757-d0bc-4fc2-bdb8-802f3ff5073e",
-                    "path": "<Keyboard>/space",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "EndTurn",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "22e82279-5c9a-4972-93d2-eff8aaf72068",
-                    "path": "<Keyboard>/enter",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "EndTurn",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
                     "id": "dbf6e579-5f85-4e65-b011-bd4edd8b7ff6",
                     "path": "<Mouse>/leftButton",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "PickPosition",
+                    "action": "ClickPosition",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -326,6 +331,105 @@
                     "processors": "",
                     "groups": "",
                     "action": "Key10",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "WASD",
+                    "id": "5161919c-88d1-42c3-ab53-76eeda014fb5",
+                    "path": "2DVector",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "CameraMove",
+                    "isComposite": true,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "up",
+                    "id": "09705dfa-7bda-4cfb-913b-ec28a542537b",
+                    "path": "<Keyboard>/w",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "CameraMove",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "down",
+                    "id": "3700dcf0-514e-446f-82a7-328924f7fd6a",
+                    "path": "<Keyboard>/s",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "CameraMove",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "left",
+                    "id": "524f040e-4320-4285-a6ea-9772920ba0e2",
+                    "path": "<Keyboard>/a",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "CameraMove",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "right",
+                    "id": "8e87df37-a7c4-4ffe-86ec-ed586ec611dc",
+                    "path": "<Keyboard>/d",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "CameraMove",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "",
+                    "id": "367e6757-d0bc-4fc2-bdb8-802f3ff5073e",
+                    "path": "<Keyboard>/space",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "EndTurn",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "22e82279-5c9a-4972-93d2-eff8aaf72068",
+                    "path": "<Keyboard>/enter",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "EndTurn",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "2c1fe77b-b067-474e-a693-4897824ce753",
+                    "path": "<Keyboard>/q",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "CameraRotateLeft",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "7f373daa-08c5-40de-be51-af0959fbd98b",
+                    "path": "<Keyboard>/e",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "CameraRotateRight",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

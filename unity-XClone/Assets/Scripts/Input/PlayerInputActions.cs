@@ -28,6 +28,33 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
             ""id"": ""f08e46e4-04c8-414c-a00e-2482dfa41636"",
             ""actions"": [
                 {
+                    ""name"": ""CameraMove"",
+                    ""type"": ""Value"",
+                    ""id"": ""6b799888-7c09-406f-81cd-614b7e099d28"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""CameraRotateLeft"",
+                    ""type"": ""Button"",
+                    ""id"": ""e9bcf578-076b-4957-a0aa-3643ec871b1c"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""CameraRotateRight"",
+                    ""type"": ""Button"",
+                    ""id"": ""a06560a3-4dc3-4b85-99e8-3758d7d4c66d"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
                     ""name"": ""EndTurn"",
                     ""type"": ""Button"",
                     ""id"": ""a4118021-28f9-4ee3-ae4e-2b1655fa707b"",
@@ -37,7 +64,7 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""PickPosition"",
+                    ""name"": ""ClickPosition"",
                     ""type"": ""Button"",
                     ""id"": ""1a2d181a-eedd-4ae8-b126-038d0612cd36"",
                     ""expectedControlType"": ""Button"",
@@ -166,34 +193,12 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
             ""bindings"": [
                 {
                     ""name"": """",
-                    ""id"": ""367e6757-d0bc-4fc2-bdb8-802f3ff5073e"",
-                    ""path"": ""<Keyboard>/space"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""EndTurn"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""22e82279-5c9a-4972-93d2-eff8aaf72068"",
-                    ""path"": ""<Keyboard>/enter"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""EndTurn"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
                     ""id"": ""dbf6e579-5f85-4e65-b011-bd4edd8b7ff6"",
                     ""path"": ""<Mouse>/leftButton"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""PickPosition"",
+                    ""action"": ""ClickPosition"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -350,6 +355,105 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
                     ""action"": ""Key10"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""WASD"",
+                    ""id"": ""5161919c-88d1-42c3-ab53-76eeda014fb5"",
+                    ""path"": ""2DVector"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""CameraMove"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""up"",
+                    ""id"": ""09705dfa-7bda-4cfb-913b-ec28a542537b"",
+                    ""path"": ""<Keyboard>/w"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""CameraMove"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""down"",
+                    ""id"": ""3700dcf0-514e-446f-82a7-328924f7fd6a"",
+                    ""path"": ""<Keyboard>/s"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""CameraMove"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""left"",
+                    ""id"": ""524f040e-4320-4285-a6ea-9772920ba0e2"",
+                    ""path"": ""<Keyboard>/a"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""CameraMove"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""right"",
+                    ""id"": ""8e87df37-a7c4-4ffe-86ec-ed586ec611dc"",
+                    ""path"": ""<Keyboard>/d"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""CameraMove"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""367e6757-d0bc-4fc2-bdb8-802f3ff5073e"",
+                    ""path"": ""<Keyboard>/space"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""EndTurn"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""22e82279-5c9a-4972-93d2-eff8aaf72068"",
+                    ""path"": ""<Keyboard>/enter"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""EndTurn"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""2c1fe77b-b067-474e-a693-4897824ce753"",
+                    ""path"": ""<Keyboard>/q"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""CameraRotateLeft"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""7f373daa-08c5-40de-be51-af0959fbd98b"",
+                    ""path"": ""<Keyboard>/e"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""CameraRotateRight"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -358,8 +462,11 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
 }");
         // TacticalCombat
         m_TacticalCombat = asset.FindActionMap("TacticalCombat", throwIfNotFound: true);
+        m_TacticalCombat_CameraMove = m_TacticalCombat.FindAction("CameraMove", throwIfNotFound: true);
+        m_TacticalCombat_CameraRotateLeft = m_TacticalCombat.FindAction("CameraRotateLeft", throwIfNotFound: true);
+        m_TacticalCombat_CameraRotateRight = m_TacticalCombat.FindAction("CameraRotateRight", throwIfNotFound: true);
         m_TacticalCombat_EndTurn = m_TacticalCombat.FindAction("EndTurn", throwIfNotFound: true);
-        m_TacticalCombat_PickPosition = m_TacticalCombat.FindAction("PickPosition", throwIfNotFound: true);
+        m_TacticalCombat_ClickPosition = m_TacticalCombat.FindAction("ClickPosition", throwIfNotFound: true);
         m_TacticalCombat_MousePosition = m_TacticalCombat.FindAction("MousePosition", throwIfNotFound: true);
         m_TacticalCombat_Cancel = m_TacticalCombat.FindAction("Cancel", throwIfNotFound: true);
         m_TacticalCombat_Key0 = m_TacticalCombat.FindAction("Key0", throwIfNotFound: true);
@@ -432,8 +539,11 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
     // TacticalCombat
     private readonly InputActionMap m_TacticalCombat;
     private ITacticalCombatActions m_TacticalCombatActionsCallbackInterface;
+    private readonly InputAction m_TacticalCombat_CameraMove;
+    private readonly InputAction m_TacticalCombat_CameraRotateLeft;
+    private readonly InputAction m_TacticalCombat_CameraRotateRight;
     private readonly InputAction m_TacticalCombat_EndTurn;
-    private readonly InputAction m_TacticalCombat_PickPosition;
+    private readonly InputAction m_TacticalCombat_ClickPosition;
     private readonly InputAction m_TacticalCombat_MousePosition;
     private readonly InputAction m_TacticalCombat_Cancel;
     private readonly InputAction m_TacticalCombat_Key0;
@@ -451,8 +561,11 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
     {
         private @PlayerInputActions m_Wrapper;
         public TacticalCombatActions(@PlayerInputActions wrapper) { m_Wrapper = wrapper; }
+        public InputAction @CameraMove => m_Wrapper.m_TacticalCombat_CameraMove;
+        public InputAction @CameraRotateLeft => m_Wrapper.m_TacticalCombat_CameraRotateLeft;
+        public InputAction @CameraRotateRight => m_Wrapper.m_TacticalCombat_CameraRotateRight;
         public InputAction @EndTurn => m_Wrapper.m_TacticalCombat_EndTurn;
-        public InputAction @PickPosition => m_Wrapper.m_TacticalCombat_PickPosition;
+        public InputAction @ClickPosition => m_Wrapper.m_TacticalCombat_ClickPosition;
         public InputAction @MousePosition => m_Wrapper.m_TacticalCombat_MousePosition;
         public InputAction @Cancel => m_Wrapper.m_TacticalCombat_Cancel;
         public InputAction @Key0 => m_Wrapper.m_TacticalCombat_Key0;
@@ -475,12 +588,21 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
         {
             if (m_Wrapper.m_TacticalCombatActionsCallbackInterface != null)
             {
+                @CameraMove.started -= m_Wrapper.m_TacticalCombatActionsCallbackInterface.OnCameraMove;
+                @CameraMove.performed -= m_Wrapper.m_TacticalCombatActionsCallbackInterface.OnCameraMove;
+                @CameraMove.canceled -= m_Wrapper.m_TacticalCombatActionsCallbackInterface.OnCameraMove;
+                @CameraRotateLeft.started -= m_Wrapper.m_TacticalCombatActionsCallbackInterface.OnCameraRotateLeft;
+                @CameraRotateLeft.performed -= m_Wrapper.m_TacticalCombatActionsCallbackInterface.OnCameraRotateLeft;
+                @CameraRotateLeft.canceled -= m_Wrapper.m_TacticalCombatActionsCallbackInterface.OnCameraRotateLeft;
+                @CameraRotateRight.started -= m_Wrapper.m_TacticalCombatActionsCallbackInterface.OnCameraRotateRight;
+                @CameraRotateRight.performed -= m_Wrapper.m_TacticalCombatActionsCallbackInterface.OnCameraRotateRight;
+                @CameraRotateRight.canceled -= m_Wrapper.m_TacticalCombatActionsCallbackInterface.OnCameraRotateRight;
                 @EndTurn.started -= m_Wrapper.m_TacticalCombatActionsCallbackInterface.OnEndTurn;
                 @EndTurn.performed -= m_Wrapper.m_TacticalCombatActionsCallbackInterface.OnEndTurn;
                 @EndTurn.canceled -= m_Wrapper.m_TacticalCombatActionsCallbackInterface.OnEndTurn;
-                @PickPosition.started -= m_Wrapper.m_TacticalCombatActionsCallbackInterface.OnPickPosition;
-                @PickPosition.performed -= m_Wrapper.m_TacticalCombatActionsCallbackInterface.OnPickPosition;
-                @PickPosition.canceled -= m_Wrapper.m_TacticalCombatActionsCallbackInterface.OnPickPosition;
+                @ClickPosition.started -= m_Wrapper.m_TacticalCombatActionsCallbackInterface.OnClickPosition;
+                @ClickPosition.performed -= m_Wrapper.m_TacticalCombatActionsCallbackInterface.OnClickPosition;
+                @ClickPosition.canceled -= m_Wrapper.m_TacticalCombatActionsCallbackInterface.OnClickPosition;
                 @MousePosition.started -= m_Wrapper.m_TacticalCombatActionsCallbackInterface.OnMousePosition;
                 @MousePosition.performed -= m_Wrapper.m_TacticalCombatActionsCallbackInterface.OnMousePosition;
                 @MousePosition.canceled -= m_Wrapper.m_TacticalCombatActionsCallbackInterface.OnMousePosition;
@@ -524,12 +646,21 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
             m_Wrapper.m_TacticalCombatActionsCallbackInterface = instance;
             if (instance != null)
             {
+                @CameraMove.started += instance.OnCameraMove;
+                @CameraMove.performed += instance.OnCameraMove;
+                @CameraMove.canceled += instance.OnCameraMove;
+                @CameraRotateLeft.started += instance.OnCameraRotateLeft;
+                @CameraRotateLeft.performed += instance.OnCameraRotateLeft;
+                @CameraRotateLeft.canceled += instance.OnCameraRotateLeft;
+                @CameraRotateRight.started += instance.OnCameraRotateRight;
+                @CameraRotateRight.performed += instance.OnCameraRotateRight;
+                @CameraRotateRight.canceled += instance.OnCameraRotateRight;
                 @EndTurn.started += instance.OnEndTurn;
                 @EndTurn.performed += instance.OnEndTurn;
                 @EndTurn.canceled += instance.OnEndTurn;
-                @PickPosition.started += instance.OnPickPosition;
-                @PickPosition.performed += instance.OnPickPosition;
-                @PickPosition.canceled += instance.OnPickPosition;
+                @ClickPosition.started += instance.OnClickPosition;
+                @ClickPosition.performed += instance.OnClickPosition;
+                @ClickPosition.canceled += instance.OnClickPosition;
                 @MousePosition.started += instance.OnMousePosition;
                 @MousePosition.performed += instance.OnMousePosition;
                 @MousePosition.canceled += instance.OnMousePosition;
@@ -575,8 +706,11 @@ public partial class @PlayerInputActions : IInputActionCollection2, IDisposable
     public TacticalCombatActions @TacticalCombat => new TacticalCombatActions(this);
     public interface ITacticalCombatActions
     {
+        void OnCameraMove(InputAction.CallbackContext context);
+        void OnCameraRotateLeft(InputAction.CallbackContext context);
+        void OnCameraRotateRight(InputAction.CallbackContext context);
         void OnEndTurn(InputAction.CallbackContext context);
-        void OnPickPosition(InputAction.CallbackContext context);
+        void OnClickPosition(InputAction.CallbackContext context);
         void OnMousePosition(InputAction.CallbackContext context);
         void OnCancel(InputAction.CallbackContext context);
         void OnKey0(InputAction.CallbackContext context);

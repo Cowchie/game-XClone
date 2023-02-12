@@ -6,6 +6,8 @@ using UnityEngine;
 using StateTree;
 
 public struct TurnTree{
+    public UnitActionList           PlayerSelectedUnitActions;
+
     public CallDoNext<TurnTree>     StartBattle;
     public CycleBranches<TurnTree>  BetweenTurns;
 
@@ -47,6 +49,16 @@ public class TurnManager : MonoBehaviour
     void Awake(){
         // Initializes the tree
         tree = new TurnTree();
+
+{ // Create a sample selected unit.
+    GetBranch<TurnTree>[] get_branches = new GetBranch<TurnTree>[11];
+    get_branches[0] = s => s.PlayerStartChooseActions;
+    get_branches[1] = s => s.PlayerStartChoosePosition;
+    for (int j = 2; j < get_branches.Length; j++){
+        get_branches[j] = s => s.PlayerStartChooseActions;
+    }
+    tree.PlayerSelectedUnitActions = new UnitActionList(get_branches);
+}
 
 { // Branch which triggers at the start of the battle.
         tree.StartBattle = new CallDoNext<TurnTree>(
@@ -98,7 +110,7 @@ public class TurnManager : MonoBehaviour
 { // Branch which waits for the first action the player chooses.
     GetBranch<TurnTree>[] get_branches = new GetBranch<TurnTree>[12];
     for (int j = 0; j < tree.PlayerDelayChooseUnitAction.Length; j++){
-        // TODO: This is retarded.
+        // TODO: This is dumb.
         int k = j;
         get_branches[k] = s => s.PlayerDelayChooseUnitAction[k];
     }
@@ -110,7 +122,7 @@ public class TurnManager : MonoBehaviour
 }
 { // Branch which waits for the player to choose action i.
     for (int i = 0; i < tree.PlayerDelayChooseUnitAction.Length; i++){
-        // TODO: This is retarded.
+        // TODO: This is dumb.
         int k = i;
         tree.PlayerDelayChooseUnitAction[k] = new DelayDoNext<TurnTree>(
             out var player_choose_action_callback, 
@@ -120,18 +132,10 @@ public class TurnManager : MonoBehaviour
     }
 }
 { // Branch which triggers when the player has chosen an action.
-    // TODO: Find a way to make this depend on the chosen unit.
-    GetBranch<TurnTree>[] get_branches = new GetBranch<TurnTree>[11];
-    get_branches[0] = s => s.PlayerStartChooseActions;
-    get_branches[1] = s => s.PlayerStartChoosePosition;
-    for (int j = 2; j < get_branches.Length; j++){
-        get_branches[j] = s => s.PlayerStartChooseActions;
-    }
-
     for (int i = 0; i < tree.PlayerEndChooseUnitAction.Length; i++){
         int k = i;
         tree.PlayerEndChooseUnitAction[i] = new CallDoNext<TurnTree>(
-            get_branches[i]
+            tree.PlayerSelectedUnitActions.ActionArray[k]
         );
 
         tree.PlayerEndChooseUnitAction[k].OnCenterOn += LogOnCenterOn("Action " + k.ToString());

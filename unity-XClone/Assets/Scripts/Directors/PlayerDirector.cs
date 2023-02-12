@@ -5,9 +5,14 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 
 
-public class PlayerDirector : MonoBehaviour
-{
+public class PlayerDirector : MonoBehaviour{
     public PlayerInputActions input;
+
+    public Transform CameraFacingDirection;
+    public Transform CameraOrbitPoint;
+
+    public float MoveSpeed;
+    public float RotateSpeed;
 
     private LayerMask map_layer;
     // Awake is called before Start is called before the first frame update
@@ -22,7 +27,32 @@ public class PlayerDirector : MonoBehaviour
 
     // Update is called once per frame
     void Update(){
-        
+        Vector2 input_dir 
+            = input.TacticalCombat.CameraMove.ReadValue<Vector2>();
+        Vector3 move_dir 
+            = input_dir.x*CameraFacingDirection.right + 
+                input_dir.y*CameraFacingDirection.forward;
+
+        // Linear motion camera movement
+        CameraOrbitPoint.Translate(
+            move_dir.normalized*MoveSpeed*Time.deltaTime, 
+            Space.World
+        );
+    
+        bool rot_right = input.TacticalCombat.CameraRotateRight.IsPressed();
+        bool rot_left = input.TacticalCombat.CameraRotateLeft.IsPressed();
+
+        float rot_direction = 0f;
+        if (rot_right && !rot_left)
+            rot_direction = -1f;
+        if (!rot_right && rot_left)
+            rot_direction = 1f;
+
+        CameraFacingDirection.Rotate(
+            transform.up, 
+            rot_direction*RotateSpeed*Time.deltaTime, 
+            Space.World
+        );
     }
 
     public void SetActionKey(Action a, int index){
@@ -53,7 +83,7 @@ public class PlayerDirector : MonoBehaviour
     [SerializeField]
     private Vector3 selected_position;
     public void SetPickPosition(Action a){
-        input.TacticalCombat.PickPosition.canceled += (cc => {
+        input.TacticalCombat.ClickPosition.canceled += (cc => {
             Ray mouse_ray = Camera.main.ScreenPointToRay(input.TacticalCombat.MousePosition.ReadValue<Vector2>());
             if (!Physics.Raycast(mouse_ray, out RaycastHit hit, 50f, map_layer))
                 return;
