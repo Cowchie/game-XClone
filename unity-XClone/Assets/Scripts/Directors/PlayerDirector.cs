@@ -95,7 +95,7 @@ public class PlayerDirector : MonoBehaviour{
     ){
         input.TacticalCombat.ClickPosition.canceled += (cc => {
             Ray mouse_ray = Camera.main.ScreenPointToRay(input.TacticalCombat.MousePosition.ReadValue<Vector2>());
-            if (raycast_conditions(mouse_ray, out RaycastHit hit))
+            if (!raycast_conditions(mouse_ray, out RaycastHit hit))
                 return;
             a();
         });
