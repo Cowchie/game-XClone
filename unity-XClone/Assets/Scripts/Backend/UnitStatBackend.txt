@@ -1,0 +1,41 @@
+What the hell do we need?
+
+1. Every unit is a collection of stats.
+    OR
+2. Every stat is a collection of values, one foreach unit.
+
+Lets go with 2:
+
+public delegate void OnStatValueChanged<Type>(Type old_value, Type new_value);
+
+// This is a read and write stat. Should there be readonly stats? I think probably no... It might be cool for units to gain stats in an encounter by accomplishing certain objectives and then keep those stats into the next encounter. 
+public class StatList<Type>{
+    private Dictionary<int, Type> values;
+    // private Dictionary <int, BuffType> temp_buff;
+    // Function which changes the return value based on the applied buff?
+    // Buff should be temporary. Maybe it needs a turn limit too?
+    // This is probaly what I need interfaces for...
+    private Dictionary<int, OnStatValueChanged> value_changed;
+
+    public Type GetValue(int i){ 
+        return values[i]; 
+    }
+    public void SetValue(int i, Type new_value){
+        value_changed[i]?.Invoke(values[i], new_value); 
+        values[i] = new_value; 
+    }
+    public void SetValueChangedCallback(int i, OnStatValueChanged callback){
+        value_changed[i] += callback;
+    }
+    public void IncrementList(int i, Type initial_value){ 
+        value_changed[i] = null; 
+        values[i] = initial_value; 
+    }
+
+    // Do these checks and throw errors?
+    // When do we want to throw these errors?
+    // Ideally, outside of the this class because this class should always be working properly.
+    private bool IsValidKey(int i){
+        return values.ContainsKey(i) && value_changed.ContainsKey(i);
+    }
+}
