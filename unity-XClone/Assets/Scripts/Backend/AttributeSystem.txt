@@ -1,0 +1,104 @@
+These are the plans for the attribute system, name pending...
+
+What do I want?
+    In broad strokes:
+        - Easy to debug...
+            - Modular
+            - Functional
+        - Easy to create new scenarios
+
+How do we easily create new scenarios?
+    - I imagine LaTeX-like macro syntax
+ex:
+    Into a text file we write code which looks like:
+
+///////////////////////////////////////////////////
+
+    // We will deal with a unit called
+fred
+
+    // Creates the value for the penalty
+penalty := Value<float> gen 0.5f
+
+    // Generate a new attribute which expires after 100 global time units have passed and assign the result to the variable penalty_timer.
+penalty_timer := GlobalTimer gen 100
+
+    // MoveRate is a collection of multipliers and AddMultiple adds a 0.5f multiple to it, and also the text "Penalty to movement". Assign penalty_to_move so that we can keep track of this multiple.
+    // The [penalty] in square brackets means that we are binding the existance of the variable penalty to the tuple:  
+        (penalty "Penalty to movement") 
+    // When that tuple is destroyed, we will also destroy the penalty variable
+penalty_to_move := {MoveRate fred} Add [penalty](penalty "Penalty to movement")
+
+    // After penalty_timer has completed, remove the movement penalty from fred.
+    // The [fred penalty_to_move] in square brackets means that we are binding the variables fred and penalty_to_move to the existance of the lambda function: 
+        () => {MoveRate fred} Remove penalty_to_move 
+    // When that lambda function is destroyed, we will also destroy both the fred and penalty_to_move variables.
+    // The penalty timer should automatically keep itself around until it has completed running, then call all of its callbacks, then destroy itself.
+{complete penalty_timer} Add {
+    [fred penalty_to_move]() => {MoveRate fred} Remove penalty_to_move
+}
+
+///////////////////////////////////////////////////
+
+What does the C# code look like for the above?
+
+///////////////////////////////////////////////////
+
+// penalty := Value<float> gen 0.5f
+//
+var penalty = Attributes.Values<float>.Generate(0.5f);
+//
+
+// penalty_timer := GlobalTimer gen 100
+//
+var penalty_timer = Attributes.GlobalTimer.Generate(100);
+//
+
+// penalty_to_move := {MoveRate fred} Add [penalty](penalty "Penalty to movement")
+//
+var tuple0 = Attributes.tuple.Generate(
+                penalty, 
+                new Attribute.Value<string>("Penalty to movement")
+            )
+
+Attributes.OnDestroyCommand[tuple0].Add(penalty);
+
+var penalty_to_move = Attributes.MoveRate[fred].Add(tuple0);
+Attributes.OnDestroyCommand[penalty_to_move].Add(tuple0);
+
+//
+// Craetes anonymous tuple which we created in the argument of the function: 
+//    {MoveRate fred} add
+// We tell tuple0 to destroy penalty when it is destroyed. This also removes penalty from the list of attributes to be destroyed automatically.
+// We tell penalty_to_move to destroy tuple0 when it is destroyed. This also removes tuple0 from the list of attributes to be destroyed automatically.
+// The above is done automatically whenever we create an anonymous tuple in the argument of a function. 
+//
+
+// {complete penalty_timer} Add {
+//     [fred penalty_to_move]() => {MoveRate fred} Remove penalty_to_move
+// }
+//
+var tuple1 = Attributes.tuple.Generate(  
+            );
+Attributes.OnDestroyCommand[tuple1].Add(fred, penalty_to_move);
+
+// TODO I would like this to be different probably...
+var lambda0 = Attributes.lambda.Generate(
+                tuple1, 
+                (tuple1) => {
+                    Attributes.MoveRate[fred].Remove(
+                        penalty_to_move
+                    );
+                }
+            );
+Attributes.OnDestroyCommand[lambda0].Add(tuple1);
+
+penalty_timer.OnCompletion.Add(lambda0);
+Attributes.OnDestroyCommand[penalty_timer].Add(lambda0);
+
+//
+// We create an anonymous tuple to store the parameters of a lambda function.
+// The lambda function which was created in the argument of the function: {complete penalty_timer} Add
+// 
+
+///////////////////////////////////////////////////
