@@ -39,3 +39,34 @@ public class StatList<Type>{
         return values.ContainsKey(i) && value_changed.ContainsKey(i);
     }
 }
+
+// We need to recreate the above class with interfaces so that we can easily modify some things.
+// What kinds of modifications do we want?
+    - Stat which calls callback when changed.
+    - Stat buff which runs out after some number of turns.
+    - 
+    
+// These options require 
+    1) Stats can be created on the fly.
+    2) When doing calculations, the logic will not know a priori what stats it will need.
+    3) Get values for each individual unit.
+    4) Set values for each individual unit.
+        - Maybe some stats should be readonly.
+    5) 
+
+interface StatListReadable<TValue, TIndex>{
+    public TValue GetValue(TIndex i);
+    public void IncreamentList(TIndex i, TValue initial_value);
+}
+
+interface StatListWriteable<TValue, TIndex>{
+    public void SetValue(TIndex i, TValue value);
+}
+
+public delegate void OnStatValueChanged<TValue>(
+    TValue old_value, 
+    TValue new_value
+);
+interface StatListValueChangeCallback<TValue, TIndex>{
+    public void SetValueChangedCallback(int i, OnStatValueChanged callback);
+}
