@@ -1,0 +1,178 @@
+- Suppose that I have a working game, and I want to add to it a poison swamp level, this means that every unit in a certain area will need to lose say 8 health every turn. 
+
+- This function is easy to write so I do so like this:
+
+
+////////////////////////// START ///////////////////////////////
+Dictionary<Indeces, Health> DoPoisonSwampDamage(
+    Indeces[] indeces, 
+    Dictionary<Indeces, Positions> positions, 
+    Dictionary<Indeces, Health> healths
+){
+    Dictionary<Indeces, Health> new_healths = new Dictionary<Indeces, Health>();
+    foreach (var i in indeces){
+        if (InPoisonSwampAreaArea(positions[i])){
+            new_healths[i] = DoDamage(
+                                        healths[i], 
+                                        8, 
+                                        "Poison\Swamp\AOE\DOT"
+                                    );
+        }
+        else{
+            new_healths[i] = healths[i];
+        }
+    }
+
+    return new_healths;
+}
+/////////////////////////// END ////////////////////////////////
+
+- This is a very imperitive, entity component system approach.
+- We can make it more funcitonal like so:
+
+
+////////////////////////// START ///////////////////////////////
+Dictionary<Indeces, Health> DoPoisonSwampDamage(
+    Indeces[] indeces, 
+    Dictionary<Indeces, Positions> positions, 
+    Dictionary<Indeces, Health> healths
+){
+    return  from i in indeces
+            select  InPoisonSwampAreaArea(positions[i]) ? 
+                        DoDamage(
+                            healths[i], 
+                            8, 
+                            "Poison\Swamp\AOE\DOT"
+                        ) : 
+                        healths[i];
+}
+/////////////////////////// END ////////////////////////////////
+
+
+- Now I want to ask a question:
+    - What if DoDamage NEEDS side effects?
+
+- What do I mean?
+    - For instance, DoDamge might make the unit unconsious, 
+    - Or it might kill the unit.
+        - If the unit dies, their family and friends might grieve.
+        - Thus we will need to call another function to update the unit's family
+        - This could affect the ability of their siblings in battle right away.
+        - We DO NOT have access to the unit mood array.
+        - Nor should we really need to do that right away.
+
+- Here is what we might do to fix the above:
+
+////////////////////////// START ///////////////////////////////
+Dictionary<Indeces, Health> DoPoisonSwampDamage(
+    Indeces[] indeces, 
+    Dictionary<Indeces, Positions> positions, 
+    Dictionary<Indeces, Health> healths, 
+    out Messages messages
+){
+    PoisonSwampArea = new Area(...);
+
+    messages = new Messages(DoPoisonSwampDamage); 
+    return  from i in indeces
+            select  InArea(
+                        positions[i], 
+                        PoisonSwampArea, 
+                        "Poison\Swamp\AOE\DOT", 
+                        out var m0
+                    ) ? 
+                        DoDamage(
+                            healths[i], 
+                            8, 
+                            "Poison\Swamp\AOE\DOT", 
+                            out var m1
+                        ); messages.Add[m1] : 
+                        healths[i]; messages.Add[m0];
+}
+/////////////////////////// END ////////////////////////////////
+
+- What does this do which we did not have before?
+    - We can safely collect all of the messages which we want to collect, and call them all later.
+    - If we call them later, we can ensure that we will always have access to the data we are modifying.
+    - In the constructor for Messages, we input the function DoPoisonSwampDamage, this means we can keep a log of which functions are trying to call what, and print it out nicely in a debug scenario. (We can also shut that off to save memory in release mode.) 
+    - The condition function can also spit out messages, this allows us to potentially make graphics highlighting to the player the position and size of the AOE. Whereas before that would be done in a separate function.
+
+- Some slight modifications:
+    - "Poison\Swamp\AOE\DOT" is included everywhere and should just be passed throught the message probably.
+
+////////////////////////// START ///////////////////////////////
+Dictionary<Indeces, Health> DoPoisonSwampDamage(
+    Indeces[] indeces, 
+    Dictionary<Indeces, Positions> positions, 
+    Dictionary<Indeces, Health> healths, 
+    ref Messages messages
+){
+    PoisonSwampArea = new Area(...);
+
+    messages =  AddCaller(
+                    messages,
+                    DoPoisonSwampDamage, 
+                    "Poison\Swamp\AOE\DOT"
+                );
+    return  from i in indeces
+            select  InArea(
+                        positions[i], 
+                        PoisonSwampArea, 
+                        ref messages
+                    ) ? 
+                        DoDamage(
+                            healths[i], 
+                            8, 
+                            ref messages
+                        ) : 
+                        healths[i];
+}
+/////////////////////////// END ////////////////////////////////
+
+- This is just recieving a message, adding the node which says that we are in the poison swamp, and then doing the damage tick.
+    - Now both the damage tick and the InArea condition checker know who called them.
+
+
+- Final concern, why are we calling DoDamage?
+    - Suppose that later down the line, we want to add a metal unit to the game which is immune to poison damage.
+    - The DoDamage funciton would then have to know whether our unit is metal or not.
+    - But the DoFireSwampDamage should not give a shit about that and so would not want to recieve data about metalness of the unit. 
+
+- Last proposal for now is this:
+    - Turn the DoDamage call itself into a message and call it later as well.
+
+////////////////////////// START ///////////////////////////////
+void DoPoisonSwampDamage(
+    Indeces[] indeces, 
+    Dictionary<Indeces, Positions> positions,  
+    ref Messages messages
+){
+    PoisonSwampArea = new Area(...);
+
+    messages =  AddCaller(
+                    messages,
+                    Msg_DoPoisonSwampDamage, 
+                    "Poison\Swamp\AOE\DOT"
+                );
+
+    messages.Add( 
+        from i in indeces
+        where   InArea(
+                    positions[i], 
+                    PoisonSwampArea, 
+                    ref messages[Msg_DoPoisonSwampDamage]
+                )
+        from i in indeces 
+        select  new MessageBuilder(Msg_DoDamage)
+                    .set[Msg_DoDamage.damage](8)
+                    .set[Msg_DoDamage.targetIndex](i);
+    )
+}
+/////////////////////////// END ////////////////////////////////
+
+- What is required for this to work?
+    - The place that calls messages MUST be able to discern exactly which data each message requires.
+    - AND which data has already been given to it, for instance: damage and targetIndex.
+    - When adding a message to a message list, the new message gets information from its parent list.
+    - Need to be able to split Messages so that we can throw old messages away.
+    - Messages have both Callers and Callees. A callee should know its caller, for instance:
+        - The new MessageBuilder(Mes_DoDamage) when added to messages will be a callee with its caller being the Msg_DoPoisonSwampDamage
