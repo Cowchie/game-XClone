@@ -176,3 +176,48 @@ void DoPoisonSwampDamage(
     - Need to be able to split Messages so that we can throw old messages away.
     - Messages have both Callers and Callees. A callee should know its caller, for instance:
         - The new MessageBuilder(Mes_DoDamage) when added to messages will be a callee with its caller being the Msg_DoPoisonSwampDamage
+
+- The above code doesn't actually work. We need to actually figure out what the messages type will look like.
+
+////////////////////////// START ///////////////////////////////
+// class Messages<StateType, FuncType>{
+//     private Caller current_caller;
+//     private Messages next_messages;
+// 
+//     public Messages [ref Caller c]{
+//         return  current_caller == c ? 
+//                     this :
+//                     next_messages is null?
+//                         throw error
+//                         next_messages[c];
+//     }
+// 
+//     public Messages Add(Messages m){
+//         if (next_messages is null){
+//             next_messages = m;
+//         }
+//         else{
+//             next_messages.Add(m)
+//         }
+//         return this;
+//     }
+//     public Messages Remove(Messages m){
+//         if (next_messages is null){
+//             ;
+//         }
+//         else if (next_messages == m){
+//             next_messages == null;
+//         }
+//         else {
+//             next_messages.Remove(m);
+//         }
+//         return this;
+//     }
+// 
+//     private FuncType func;
+// 
+//     public StateType Play(StateType state){
+//         return ConvertLambdaToMessage(func, state)
+//     }
+// }
+/////////////////////////// END ////////////////////////////////
