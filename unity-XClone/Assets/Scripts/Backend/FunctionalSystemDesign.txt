@@ -169,6 +169,137 @@ void DoPoisonSwampDamage(
 }
 /////////////////////////// END ////////////////////////////////
 
+
+- I still don't really like the below code.
+- I feel like the above is pretty clean even if its not quite in a working state.
+
+
+- To get where we really want to be, we will start by writing out the data we want to manipulate, and build the functionality around that.
+
+- There are really multiple kinds of data:
+    - The function which our message calls.
+    - The parameters in the function call.
+        - We only require that some of this information be set when the message is posted.
+            - Includes type string.
+            - Message which posted this request.
+        - The rest of this can be set, or not.
+    - The function which transform global state to function parameters and
+    - The function which transforms function output to global state.
+    - The List of messages.
+
+- I Like the below, It is simple and quick.
+
+////////////////////////// START ///////////////////////////////
+interface ParamConversion<InputT, OptInputT, OutputT, StateT>{
+    public InputT StateToInput(InputT input, OptInputT opt_input, StateT state);
+    public StateT OutputToState(OutputT output, StateT state);
+}
+
+class Message<InputT, OptInputT, OutputT, StateT>{
+    InputT      input;
+    OptInputT   opt_input;
+
+    Func<InputT, OptInputT, OutputT>                    func;
+    ParamConversion<InputT, OptInputT, OutputT, StateT> convert; 
+
+    public StateType Invoke(StateType state){
+        return  convert.OutputToState(
+                    func(
+                        convert.StateToInput(input, opt_input, state)
+                    ), 
+                    state
+                );
+    }
+}
+/////////////////////////// END ////////////////////////////////
+    
+- I can update it by including a list of messages for which this is the caller, and a message which is its caller.
+
+////////////////////////// START ///////////////////////////////
+interface ParamConversion<InputT, OptInputT, OutputT, StateT>{
+    InputT StateToInput(InputT input, OptInputT opt_input, StateT state);
+    StateT OutputToState(OutputT output, StateT state);
+}
+interface PlaceholderType{
+    void SetCaller(PlaceholderType placeholder);
+    PlaceholderType Add(PlaceholderType placeholder);
+    List<PlaceholderType> Split;
+}
+
+
+class Message<InputT, OptInputT, OutputT, StateT> : PlaceholderType{
+    InputT      input;
+    OptInputT   opt_input;
+
+    Func<InputT, OptInputT, OutputT>                    func;
+    ParamConversion<InputT, OptInputT, OutputT, StateT> convert; 
+
+    StateType Invoke(StateType state){
+        return convert.OutputToState(func(
+            convert.StateToInput(input, opt_input, state)), state);
+    }
+
+    PlaceholderType         caller;
+    List<PlaceholderType>   callees;
+
+    void SetCaller(PlaceholderType placeholder){
+        caller = placeholder;
+    }
+
+    PlaceholderType Add(PlaceholderType placeholder){
+        placeholder.SetCaller(this);
+        callees.Add(placeholder);
+    }
+
+    List<PlaceholderType> Split{
+        return callees;
+    }
+
+}
+/////////////////////////// END ////////////////////////////////
+
+
+////////////////////////// START ///////////////////////////////
+/////////////////////////// END ////////////////////////////////
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+{
 - What is required for this to work?
     - The place that calls messages MUST be able to discern exactly which data each message requires.
     - AND which data has already been given to it, for instance: damage and targetIndex.
@@ -193,7 +324,7 @@ interface UpdateState<StateT>{
     - With a generic data type representing the generic outputs.
 ////////////////////////// START ///////////////////////////////
 class Message<InputT, OutputT, StateT> : UpdateState<StateT>{
-    InputT savedInput;
+    InputT input;
 
     Func<InputT, OutputT>    func;
     ParamConversion<InputT, OutputT, StateT> convert; 
@@ -201,7 +332,7 @@ class Message<InputT, OutputT, StateT> : UpdateState<StateT>{
     public StateType Update(StateType state){
         return  convert.OutputToState(
                     func(
-                        convert.StateToInput(savedInput, state)
+                        convert.StateToInput(input, state)
                     ), 
                     state
                 );
@@ -218,10 +349,10 @@ interface ParamConversion<InputT, OutputT, StateT>{
 /////////////////////////// END ////////////////////////////////
 
 
-- Message List
-    - Function Add callee.
-    - Function AddCaller.
-    - Function split.
+- The next most importatn functionality is the Message List
+    - Function to Add callee.
+    - Function to AddCaller.
+    - Function to split list.
     - Move to Messages with specified caller.
 ////////////////////////// START ///////////////////////////////
 class Messages<MessageT>{
@@ -265,8 +396,17 @@ class Messages<MessageT>{
     public MessageT GetMessage(){
         return = my_message;
     }
+
+    public override string ToString(){
+        return  my_caller is null ? 
+                    my_string : 
+                    my_caller.ToString() + ">" + my_string;
+    }
 } 
 /////////////////////////// END ////////////////////////////////
+
+- I was thinking that I didn't like this, but actually, what happens if the StateT of changes at some point. I will likely need to do that and so the game is going to need to be pretty open to that.
+}
 
 
 ////////////////////////// START ///////////////////////////////
