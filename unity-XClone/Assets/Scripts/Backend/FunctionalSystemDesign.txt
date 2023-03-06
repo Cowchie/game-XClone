@@ -68,11 +68,11 @@ Dictionary<Indeces, Health> DoPoisonSwampDamage(
     Indeces[] indeces, 
     Dictionary<Indeces, Positions> positions, 
     Dictionary<Indeces, Health> healths, 
-    out Messages messages
+    out Message Message
 ){
     PoisonSwampArea = new Area(...);
 
-    messages = new Messages(DoPoisonSwampDamage); 
+    Message = new Message(DoPoisonSwampDamage); 
     return  from i in indeces
             select  InArea(
                         positions[i], 
@@ -85,16 +85,16 @@ Dictionary<Indeces, Health> DoPoisonSwampDamage(
                             8, 
                             "Poison\Swamp\AOE\DOT", 
                             out var m1
-                        ); messages.Add[m1] : 
-                        healths[i]; messages.Add[m0];
+                        ); Message.Add[m1] : 
+                        healths[i]; Message.Add[m0];
 }
 /////////////////////////// END ////////////////////////////////
 
 - What does this do which we did not have before?
-    - We can safely collect all of the messages which we want to collect, and call them all later.
+    - We can safely collect all of the Message which we want to collect, and call them all later.
     - If we call them later, we can ensure that we will always have access to the data we are modifying.
-    - In the constructor for Messages, we input the function DoPoisonSwampDamage, this means we can keep a log of which functions are trying to call what, and print it out nicely in a debug scenario. (We can also shut that off to save memory in release mode.) 
-    - The condition function can also spit out messages, this allows us to potentially make graphics highlighting to the player the position and size of the AOE. Whereas before that would be done in a separate function.
+    - In the constructor for Message, we input the function DoPoisonSwampDamage, this means we can keep a log of which functions are trying to call what, and print it out nicely in a debug scenario. (We can also shut that off to save memory in release mode.) 
+    - The condition function can also spit out Message, this allows us to potentially make graphics highlighting to the player the position and size of the AOE. Whereas before that would be done in a separate function.
 
 - Some slight modifications:
     - "Poison\Swamp\AOE\DOT" is included everywhere and should just be passed throught the message probably.
@@ -104,12 +104,12 @@ Dictionary<Indeces, Health> DoPoisonSwampDamage(
     Indeces[] indeces, 
     Dictionary<Indeces, Positions> positions, 
     Dictionary<Indeces, Health> healths, 
-    ref Messages messages
+    ref Message Message
 ){
     PoisonSwampArea = new Area(...);
 
-    messages =  AddCaller(
-                    messages,
+    Message =  AddCaller(
+                    Message,
                     DoPoisonSwampDamage, 
                     "Poison\Swamp\AOE\DOT"
                 );
@@ -117,12 +117,12 @@ Dictionary<Indeces, Health> DoPoisonSwampDamage(
             select  InArea(
                         positions[i], 
                         PoisonSwampArea, 
-                        ref messages
+                        ref Message
                     ) ? 
                         DoDamage(
                             healths[i], 
                             8, 
-                            ref messages
+                            ref Message
                         ) : 
                         healths[i];
 }
@@ -144,22 +144,22 @@ Dictionary<Indeces, Health> DoPoisonSwampDamage(
 void DoPoisonSwampDamage(
     Indeces[] indeces, 
     Dictionary<Indeces, Positions> positions,  
-    ref Messages messages
+    ref Message Message
 ){
     PoisonSwampArea = new Area(...);
 
-    messages =  AddCaller(
-                    messages,
+    Message =  AddCaller(
+                    Message,
                     Msg_DoPoisonSwampDamage, 
                     "Poison\Swamp\AOE\DOT"
                 );
 
-    messages.Add( 
+    Message.Add( 
         from i in indeces
         where   InArea(
                     positions[i], 
                     PoisonSwampArea, 
-                    ref messages[Msg_DoPoisonSwampDamage]
+                    ref Message[Msg_DoPoisonSwampDamage]
                 )
         from i in indeces 
         select  new MessageBuilder(Msg_DoDamage)
@@ -185,7 +185,7 @@ void DoPoisonSwampDamage(
         - The rest of this can be set, or not.
     - The function which transform global state to function parameters and
     - The function which transforms function output to global state.
-    - The List of messages.
+    - The List of Message.
 
 - I Like the below, It is simple and quick.
 
@@ -213,50 +213,52 @@ class Message<InputT, OptInputT, OutputT, StateT>{
 }
 /////////////////////////// END ////////////////////////////////
     
-- I can update it by including a list of messages for which this is the caller, and a message which is its caller.
+- I can update it by including a list of Message (callees) for which this is the caller, and a message which is its caller.
 
 ////////////////////////// START ///////////////////////////////
 interface ParamConversion<InputT, OptInputT, OutputT, StateT>{
     InputT StateToInput(InputT input, OptInputT opt_input, StateT state);
     StateT OutputToState(OutputT output, StateT state);
 }
-interface PlaceholderType{
-    void SetCaller(PlaceholderType placeholder);
-    PlaceholderType Add(PlaceholderType placeholder);
-    List<PlaceholderType> Split;
+interface Message<StateT>{
+    StateT Invoke(StateT state);
+    void SetCaller(Message<StateT> m);
+    Message Add(Message<StateT> m);
+    List<Message<StateT>> Split();
 }
 
 
-class Message<InputT, OptInputT, OutputT, StateT> : PlaceholderType{
+class GenericMessage<InputT, OptInputT, OutputT, StateT> : Message<StateT>{
     InputT      input;
     OptInputT   opt_input;
 
     Func<InputT, OptInputT, OutputT>                    func;
     ParamConversion<InputT, OptInputT, OutputT, StateT> convert; 
 
-    StateType Invoke(StateType state){
+    StateT Invoke(StateT state){
         return convert.OutputToState(func(
             convert.StateToInput(input, opt_input, state)), state);
     }
 
-    PlaceholderType         caller;
-    List<PlaceholderType>   callees;
+    Message<StateT>         caller;
+    List<Message<StateT>>   callees;
 
-    void SetCaller(PlaceholderType placeholder){
-        caller = placeholder;
+    void SetCaller(Message<StateT> m){
+        caller = m;
     }
 
-    PlaceholderType Add(PlaceholderType placeholder){
-        placeholder.SetCaller(this);
-        callees.Add(placeholder);
+    Message<StateT> Add(Message<StateT> m){
+        m.SetCaller(this);
+        callees.Add(m);
     }
 
-    List<PlaceholderType> Split{
+    List<Message<StateT>> Split(){
         return callees;
     }
 
 }
 /////////////////////////// END ////////////////////////////////
+
 
 
 ////////////////////////// START ///////////////////////////////
@@ -301,14 +303,14 @@ class Message<InputT, OptInputT, OutputT, StateT> : PlaceholderType{
 
 {
 - What is required for this to work?
-    - The place that calls messages MUST be able to discern exactly which data each message requires.
+    - The place that calls Message MUST be able to discern exactly which data each message requires.
     - AND which data has already been given to it, for instance: damage and targetIndex.
     - When adding a message to a message list, the new message gets information from its parent list.
-    - Need to be able to split Messages so that we can throw old messages away.
-    - Messages have both Callers and Callees. A callee should know its caller, for instance:
-        - The new MessageBuilder(Mes_DoDamage) when added to messages will be a callee with its caller being the Msg_DoPoisonSwampDamage
+    - Need to be able to split Message so that we can throw old Message away.
+    - Message have both Callers and Callees. A callee should know its caller, for instance:
+        - The new MessageBuilder(Mes_DoDamage) when added to Message will be a callee with its caller being the Msg_DoPoisonSwampDamage
 
-- The above code doesn't actually work. We need to actually figure out what the messages type will look like.
+- The above code doesn't actually work. We need to actually figure out what the Message type will look like.
 
 - The most basic functionality is this:
     - Takes in the game state, and returns new game state.
@@ -353,44 +355,44 @@ interface ParamConversion<InputT, OutputT, StateT>{
     - Function to Add callee.
     - Function to AddCaller.
     - Function to split list.
-    - Move to Messages with specified caller.
+    - Move to Message with specified caller.
 ////////////////////////// START ///////////////////////////////
-class Messages<MessageT>{
+class Message<MessageT>{
 
     MessageT current_caller;
-    Messages next_Messages;
+    Message next_Message;
 
-    public Messages Add(ref Messages ms){
+    public Message Add(ref Message ms){
         m.current_caller = current_caller;
-        next_messages is null ? next_Messages = ms : next_messages.Add(m);
+        next_Message is null ? next_Message = ms : next_Message.Add(m);
         return this;
     }
 
-    public static Messages AddCaller(ref Messages prev, MessageT m, String str){
-        var val = new Messages<MessageT>(m, str);
+    public static Message AddCaller(ref Message prev, MessageT m, String str){
+        var val = new Message<MessageT>(m, str);
         val.current_caller = m;
         return prev is null ? val : prev.Add(val);
     }
 
     MessageT my_message;
     String my_string;
-    public Messages(MessageT m, String str){
+    public Message(MessageT m, String str){
         my_message = m;
         my_string = str;
     }
 
-    public List<Messages> SplitNext(){
-        var l = new List<Messages>();
-        var m = next_Messages;
+    public List<Message> SplitNext(){
+        var l = new List<Message>();
+        var m = next_Message;
         while (!(m is null)){
             l.Add(m);
-            m = m.next_Messages;
+            m = m.next_Message;
         }
         return l;
     }
 
-    public Messages [ref messageT caller]{
-        return my_caller == caller ? this : next_Messages[caller];
+    public Message [ref messageT caller]{
+        return my_caller == caller ? this : next_Message[caller];
     }
 
     public MessageT GetMessage(){
